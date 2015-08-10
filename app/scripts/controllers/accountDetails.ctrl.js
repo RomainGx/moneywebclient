@@ -25,6 +25,9 @@
     this.saveBankOperation = saveBankOperation;
     this.saveThirdParty = saveThirdParty;
 
+    // TODO Gérer le cas où on sélectionne une catégorie (ou si on marque le nom d'une nouvelle) : on doit vider la sous-catégorie
+    // (sauf si la catégorie sélectionnée est identique à celle précédemment sélectionnée)
+
 
     function addNewOperation(type) {
       vm.currentBankOperation = {
@@ -35,21 +38,69 @@
       };
 
       if (type === 'CHARGE') {
-        vm.currentBankOperation.category = vm.chargeCategories[0];
+        if (vm.chargeCategories && vm.chargeCategories.length > 0) {
+          vm.currentBankOperation.category = vm.chargeCategories[0];
+          if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
+            vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
+          }
+          else {
+            vm.currentBankOperation.subCategory = "";
+          }
+        }
+        else {
+          vm.currentBankOperation.category = "";
+          vm.currentBankOperation.subCategory = "";
+        }
       }
       else {
-        vm.currentBankOperation.category = vm.creditCategories[0];
+        if (vm.creditCategories && vm.creditCategories.length > 0) {
+          vm.currentBankOperation.category = vm.creditCategories[0];
+          if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
+            vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
+          }
+          else {
+            vm.currentBankOperation.subCategory = "";
+          }
+        }
+        else {
+          vm.currentBankOperation.category = "";
+          vm.currentBankOperation.subCategory = "";
+        }
       }
     }
 
     function onChargeTab() {
-      vm.currentBankOperation.category = vm.chargeCategories[0];
+      if (vm.chargeCategories && vm.chargeCategories.length > 0) {
+        vm.currentBankOperation.category = vm.chargeCategories[0];
+        if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
+          vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
+        }
+        else {
+          vm.currentBankOperation.subCategory = "";
+        }
+      }
+      else {
+        vm.currentBankOperation.category = "";
+        vm.currentBankOperation.subCategory = "";
+      }
       vm.currentBankOperation.charge = vm.currentBankOperation.credit;
       delete vm.currentBankOperation.credit;
     }
 
     function onCreditTab() {
-      vm.currentBankOperation.category = vm.creditCategories[0];
+      if (vm.creditCategories && vm.creditCategories.length > 0) {
+        vm.currentBankOperation.category = vm.creditCategories[0];
+        if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
+          vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
+        }
+        else {
+          vm.currentBankOperation.subCategory = "";
+        }
+      }
+      else {
+        vm.currentBankOperation.category = "";
+        vm.currentBankOperation.subCategory = "";
+      }
       vm.currentBankOperation.credit = vm.currentBankOperation.charge;
       delete vm.currentBankOperation.charge;
     }

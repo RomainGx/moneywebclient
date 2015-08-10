@@ -60,6 +60,7 @@ BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
               <td>Sous-catégorie</td>
               <td>
                 <input type="text"
+                       ng-disabled="!AccountDetailsCtrl.currentBankOperation.category"
                        ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
                        typeahead="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | filter:$viewValue "
                        typeahead-min-length="0"/>
@@ -122,6 +123,7 @@ BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
               <td>Sous-catégorie</td>
               <td>
                 <input type="text"
+                       ng-disabled="!AccountDetailsCtrl.currentBankOperation.category"
                        ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
                        typeahead="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | filter:$viewValue "
                        typeahead-min-length="0"/>
