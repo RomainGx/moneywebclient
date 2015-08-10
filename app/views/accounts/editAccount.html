@@ -1,0 +1,26 @@
+<h3>Nouveau compte</h3>
+
+<form novalidate>
+  <input type="hidden" ng-model="EditAccountCtrl.account.id"/>
+
+  Nom du compte
+  <input type="text" ng-model="EditAccountCtrl.account.name"/>
+
+  <br/>
+
+  Nom de l'établissement bancaire
+  <input type="text" ng-model="EditAccountCtrl.account.bankName"/>
+
+  <br/>
+
+  Numéro du compte
+  <input type="text" ng-model="EditAccountCtrl.account.number"/>
+
+  <br/>
+
+  Solde initial du compte
+  <input type="text" ng-model="EditAccountCtrl.account.startingBalance"/>
+
+  <button type="submit" ng-click="EditAccountCtrl.save()">Valider</button>
+  <button type="button">Annuler</button>
+</form>

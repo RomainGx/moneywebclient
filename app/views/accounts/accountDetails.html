@@ -1,0 +1,156 @@
+<!--ACC {{AccountDetailsCtrl.account}}<br />-->
+BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
+
+<h3>{{AccountDetailsCtrl.account.name}}</h3>
+
+<table>
+  <tr>
+    <th>Echéance</th>
+    <th>Num chèque</th>
+    <th>Date</th>
+    <th></th>
+    <th>Payé à</th>
+    <th>Débit</th>
+    <th>Crédit</th>
+    <th>Solde</th>
+  </tr>
+  <tr ng-repeat="operation in AccountDetailsCtrl.bankOperations | orderBy: 'operationDate'">
+    <td></td>
+    <td>{{operation.bankNoteNum}}</td>
+    <td>{{operation.operationDate | date: 'dd/MM/yyyy'}}</td>
+    <td>
+      <span ng-if="operation.balanceState == 'PENDING'">P</span>
+      <span ng-if="operation.balanceState == 'BALANCED'">R</span>
+    </td>
+    <td>{{operation.thirdParty.name}}</td>
+    <td>{{operation.charge}}</td>
+    <td>{{operation.credit}}</td>
+    <td>TODO</td>
+  </tr>
+</table>
+
+<div>
+  <tabset justified="true">
+    <tab heading="Débit" select="AccountDetailsCtrl.onChargeTab()">
+      <button type="button" ng-click="AccountDetailsCtrl.addNewOperation()">Nouveau</button>
+      <div>
+        <div>
+          <table>
+            <tr>
+              <td>Payé à</td>
+              <td>
+                <input type="text"
+                       ng-model="AccountDetailsCtrl.currentBankOperation.thirdParty"
+                       typeahead="thirdParty as thirdParty.name for thirdParty in AccountDetailsCtrl.thirdParties | filter:$viewValue "
+                       typeahead-min-length="0"/>
+              </td>
+            </tr>
+            <tr>
+              <td>Catégorie</td>
+              <td>
+                <select ng-model="AccountDetailsCtrl.currentBankOperation.category"
+                        ng-options="category as category.name for category in AccountDetailsCtrl.chargeCategories | orderBy: 'name'"
+                        required>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Sous-catégorie</td>
+              <td>
+                <select ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
+                        ng-options="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | orderBy: 'name'">
+                  <option value=""></option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <textarea ng-model="AccountDetailsCtrl.currentBankOperation.notes"></textarea>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div>
+          <table>
+            <tr>
+              <td>Num chèque</td>
+              <td><input type="text" ng-model="AccountDetailsCtrl.currentBankOperation.bankNoteNum"/></td>
+            </tr>
+            <tr>
+              <td>Date</td>
+              <td><input type="text" ng-model="AccountDetailsCtrl.currentBankOperation.operationDate"/></td>
+            </tr>
+            <tr>
+              <td>Montant</td>
+              <td><input type="number" ng-model="AccountDetailsCtrl.currentBankOperation.charge"/></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <button type="submit" ng-click="AccountDetailsCtrl.save()">Saisir</button>
+      <button type="reset">Annuler</button>
+    </tab>
+    <tab heading="Crédit" select="AccountDetailsCtrl.onCreditTab()">
+      <button type="button" ng-click="AccountDetailsCtrl.addNewOperation()">Nouveau</button>
+      <div>
+        <div>
+          <table>
+            <tr>
+              <td>De</td>
+              <td>
+                <input type="text"
+                       ng-model="AccountDetailsCtrl.currentBankOperation.thirdParty"
+                       typeahead="thirdParty as thirdParty.name for thirdParty in AccountDetailsCtrl.thirdParties | filter:$viewValue"
+                       typeahead-min-length="0"/>
+              </td>
+            </tr>
+            <tr>
+              <td>Catégorie</td>
+              <td>
+                <select ng-model="AccountDetailsCtrl.currentBankOperation.category"
+                        ng-options="category as category.name for category in AccountDetailsCtrl.creditCategories | orderBy: 'name'"
+                        required>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>Sous-catégorie</td>
+              <td>
+                <select ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
+                        ng-options="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | orderBy: 'name'">
+                  <option value=""></option>
+                </select>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <textarea ng-model="AccountDetailsCtrl.currentBankOperation.notes"></textarea>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div>
+          <table>
+            <tr>
+              <td>Num chèque</td>
+              <td><input type="text" ng-model="AccountDetailsCtrl.currentBankOperation.bankNoteNum"/></td>
+            </tr>
+            <tr>
+              <td>Date</td>
+              <td><input type="text" ng-model="AccountDetailsCtrl.currentBankOperation.operationDate"/></td>
+            </tr>
+            <tr>
+              <td>Montant</td>
+              <td><input type="number" ng-model="AccountDetailsCtrl.currentBankOperation.credit"/></td>
+            </tr>
+          </table>
+        </div>
+      </div>
+
+      <button type="submit">Saisir</button>
+      <button type="reset">Annuler</button>
+    </tab>
+  </tabset>
+</div>

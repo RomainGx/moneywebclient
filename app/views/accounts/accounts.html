@@ -1,0 +1,16 @@
+<a href="#/editAccount">Nouveau compte</a>
+
+<table>
+  <tr>
+    <th>Compte</th>
+    <th>Solde</th>
+  </tr>
+  <tr ng-repeat="account in AccountsCtrl.accounts">
+    <td>
+      <a href="#/accounts/{{account.id}}">{{account.name}} - {{account.number}}</a>
+      <br/>
+      {{account.bankName}}
+    </td>
+    <td>{{account.finalBalance}}</td>
+  </tr>
+</table>
