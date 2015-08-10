@@ -32,7 +32,7 @@ BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
 <div>
   <tabset justified="true">
     <tab heading="Débit" select="AccountDetailsCtrl.onChargeTab()">
-      <button type="button" ng-click="AccountDetailsCtrl.addNewOperation('charge')">Nouveau</button>
+      <button type="button" ng-click="AccountDetailsCtrl.addNewOperation('CHARGE')">Nouveau</button>
       <div>
         <div>
           <table>
@@ -48,19 +48,21 @@ BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
             <tr>
               <td>Catégorie</td>
               <td>
-                <select ng-model="AccountDetailsCtrl.currentBankOperation.category"
-                        ng-options="category as category.name for category in AccountDetailsCtrl.chargeCategories | orderBy: 'name'"
-                        required>
+                <input type="text"
+                       ng-model="AccountDetailsCtrl.currentBankOperation.category"
+                       typeahead="category as category.name for category in AccountDetailsCtrl.chargeCategories | filter:$viewValue "
+                       typeahead-min-length="0"
+                       required/>
                 </select>
               </td>
             </tr>
             <tr>
               <td>Sous-catégorie</td>
               <td>
-                <select ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
-                        ng-options="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | orderBy: 'name'">
-                  <option value=""></option>
-                </select>
+                <input type="text"
+                       ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
+                       typeahead="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | filter:$viewValue "
+                       typeahead-min-length="0"/>
               </td>
             </tr>
             <tr>
@@ -92,7 +94,7 @@ BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
       <button type="reset">Annuler</button>
     </tab>
     <tab heading="Crédit" select="AccountDetailsCtrl.onCreditTab()">
-      <button type="button" ng-click="AccountDetailsCtrl.addNewOperation('credit')">Nouveau</button>
+      <button type="button" ng-click="AccountDetailsCtrl.addNewOperation('CREDIT')">Nouveau</button>
       <div>
         <div>
           <table>
@@ -108,20 +110,21 @@ BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
             <tr>
               <td>Catégorie</td>
               <td>
-                <select ng-model="AccountDetailsCtrl.currentBankOperation.category"
-                        ng-options="category as category.name for category in AccountDetailsCtrl.creditCategories | orderBy: 'name'"
-                        required>
+                <input type="text"
+                       ng-model="AccountDetailsCtrl.currentBankOperation.category"
+                       typeahead="category as category.name for category in AccountDetailsCtrl.creditCategories | filter:$viewValue "
+                       typeahead-min-length="0"
+                       required/>
                 </select>
               </td>
             </tr>
             <tr>
               <td>Sous-catégorie</td>
               <td>
-                <select ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
-                        ng-options="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | orderBy: 'name'">
-                  <option value=""></option>
-                </select>
-                </select>
+                <input type="text"
+                       ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
+                       typeahead="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | filter:$viewValue "
+                       typeahead-min-length="0"/>
               </td>
             </tr>
             <tr>
@@ -149,7 +152,7 @@ BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
         </div>
       </div>
 
-      <button type="submit">Saisir</button>
+      <button type="submit" ng-click="AccountDetailsCtrl.save()">Saisir</button>
       <button type="reset">Annuler</button>
     </tab>
   </tabset>

@@ -6,8 +6,8 @@
     .controller('AccountDetailsCtrl', AccountDetailsCtrl);
 
 
-  AccountDetailsCtrl.$inject = ['Accounts', 'BankOperations', 'Categories', 'ThirdParties', '$routeParams'];
-  function AccountDetailsCtrl(Accounts, BankOperations, Categories, ThirdParties, $routeParams)
+  AccountDetailsCtrl.$inject = ['Accounts', 'BankOperations', 'Categories', 'SubCategories', 'ThirdParties', '$routeParams', '$q'];
+  function AccountDetailsCtrl(Accounts, BankOperations, Categories, SubCategories, ThirdParties, $routeParams, $q)
   {
     var vm = this;
 
@@ -31,10 +31,10 @@
         account: vm.account,
         type: type,
         operationDate: moment().format('DD/MM/YYYY'),
-        balanceState: {id: 0}
+        balanceState: "NOT_BALANCED"
       };
 
-      if (type === 'charge') {
+      if (type === 'CHARGE') {
         vm.currentBankOperation.category = vm.chargeCategories[0];
       }
       else {
@@ -65,18 +65,29 @@
         }
       }
 
-      if (vm.currentBankOperation.thirdParty.name) {
-        vm.saveBankOperation();
+      // TODO Check si existe dans categories (+subcategory)
+
+
+      //saveBankOperation();
+
+      if (!vm.currentBankOperation.thirdParty.name) {
+        saveThirdParty();
+      }
+      else if (!vm.currentBankOperation.category.name) {
+        saveCategory();
+      }
+      else if (!vm.currentBankOperation.subCategory.name) {
+        saveSubCategory();
       }
       else {
-        vm.saveThirdParty();
+        saveBankOperation();
       }
     }
 
     function saveBankOperation() {
-      BankOperations.save({accountId: vm.account.id}, vm.currentBankOperation, function (data) {
+      BankOperations.save({accountId: vm.account.id}, vm.currentBankOperation, function (bankOperation) {
         alert('ok bank op');
-        vm.bankOperations.push(data);
+        vm.bankOperations.push(bankOperation);
       }, function () {
         alert('error bank op');
       });
@@ -85,13 +96,63 @@
     function saveThirdParty() {
       vm.currentBankOperation.thirdParty = {name: vm.currentBankOperation.thirdParty};
 
-      ThirdParties.save(vm.currentBankOperation.thirdParty, function (data) {
+      ThirdParties.save(vm.currentBankOperation.thirdParty, function (thirdParty) {
         alert('ok TP');
 
-        vm.currentBankOperation.thirdParty = data;
+        vm.currentBankOperation.thirdParty = thirdParty;
+        if (!vm.currentBankOperation.category.name) {
+          saveCategory();
+        }
+        else if (!vm.currentBankOperation.subCategory.name) {
+          saveSubCategory();
+        }
+        else {
+          saveBankOperation();
+        }
+      }, function () {
+        alert('error tp');
+      });
+    }
+
+    function saveCategory() {
+      vm.currentBankOperation.category = {name: vm.currentBankOperation.category, type: vm.currentBankOperation.type};
+
+      Categories.Common.save(vm.currentBankOperation.category, function (category) {
+        alert('ok categ');
+
+        vm.currentBankOperation.category = category;
+
+        if (vm.currentBankOperation.category.type == 'CHARGE') {
+          vm.chargeCategories.push(category);
+        }
+        else {
+          vm.creditCategories.push(category);
+        }
+
+
+        if (!vm.currentBankOperation.subCategory.name) {
+          saveSubCategory();
+        }
+        else {
+          saveBankOperation();
+        }
+      }, function () {
+        alert('error categ');
+      });
+    }
+
+    function saveSubCategory() {
+      vm.currentBankOperation.subCategory = {name: vm.currentBankOperation.subCategory, category: vm.currentBankOperation.category};
+
+      SubCategories.save(vm.currentBankOperation.subCategory, function (subCategory) {
+        alert('ok subCategory');
+
+        vm.currentBankOperation.subCategory = subCategory;
+        vm.currentBankOperation.category.subCategories.push(subCategory);
+
         saveBankOperation();
       }, function () {
-        alert('error TP');
+        alert('error subcateg');
       });
     }
   }
