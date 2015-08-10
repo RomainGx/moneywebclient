@@ -27,24 +27,29 @@
 
 
     function addNewOperation(type) {
-      var today = new Date();
-
       vm.currentBankOperation = {
         account: vm.account,
         type: type,
         operationDate: moment().format('DD/MM/YYYY'),
         balanceState: {id: 0}
       };
+
+      if (type === 'charge') {
+        vm.currentBankOperation.category = vm.chargeCategories[0];
+      }
+      else {
+        vm.currentBankOperation.category = vm.creditCategories[0];
+      }
     }
 
     function onChargeTab() {
-      vm.currentBankOperation.category = {};
+      vm.currentBankOperation.category = vm.chargeCategories[0];
       vm.currentBankOperation.charge = vm.currentBankOperation.credit;
       delete vm.currentBankOperation.credit;
     }
 
     function onCreditTab() {
-      vm.currentBankOperation.category = {};
+      vm.currentBankOperation.category = vm.creditCategories[0];
       vm.currentBankOperation.credit = vm.currentBankOperation.charge;
       delete vm.currentBankOperation.charge;
     }
@@ -69,8 +74,9 @@
     }
 
     function saveBankOperation() {
-      BankOperations.save({accountId: vm.account.id}, vm.currentBankOperation, function () {
+      BankOperations.save({accountId: vm.account.id}, vm.currentBankOperation, function (data) {
         alert('ok bank op');
+        vm.bankOperations.push(data);
       }, function () {
         alert('error bank op');
       });

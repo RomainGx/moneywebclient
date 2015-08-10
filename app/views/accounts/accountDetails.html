@@ -32,7 +32,7 @@ BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
 <div>
   <tabset justified="true">
     <tab heading="Débit" select="AccountDetailsCtrl.onChargeTab()">
-      <button type="button" ng-click="AccountDetailsCtrl.addNewOperation()">Nouveau</button>
+      <button type="button" ng-click="AccountDetailsCtrl.addNewOperation('charge')">Nouveau</button>
       <div>
         <div>
           <table>
@@ -92,7 +92,7 @@ BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
       <button type="reset">Annuler</button>
     </tab>
     <tab heading="Crédit" select="AccountDetailsCtrl.onCreditTab()">
-      <button type="button" ng-click="AccountDetailsCtrl.addNewOperation()">Nouveau</button>
+      <button type="button" ng-click="AccountDetailsCtrl.addNewOperation('credit')">Nouveau</button>
       <div>
         <div>
           <table>
