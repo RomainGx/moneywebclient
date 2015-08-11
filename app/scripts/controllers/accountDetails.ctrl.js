@@ -38,71 +38,25 @@
       };
 
       if (type === 'CHARGE') {
-        if (vm.chargeCategories && vm.chargeCategories.length > 0) {
-          vm.currentBankOperation.category = vm.chargeCategories[0];
-          if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
-            vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
-          }
-          else {
-            vm.currentBankOperation.subCategory = "";
-          }
-        }
-        else {
-          vm.currentBankOperation.category = "";
-          vm.currentBankOperation.subCategory = "";
-        }
+        selectFirstAvailableChargeCategories();
       }
       else {
-        if (vm.creditCategories && vm.creditCategories.length > 0) {
-          vm.currentBankOperation.category = vm.creditCategories[0];
-          if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
-            vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
-          }
-          else {
-            vm.currentBankOperation.subCategory = "";
-          }
-        }
-        else {
-          vm.currentBankOperation.category = "";
-          vm.currentBankOperation.subCategory = "";
-        }
+        selectFirstAvailableCreditCategories();
       }
     }
 
     function onChargeTab() {
-      if (vm.chargeCategories && vm.chargeCategories.length > 0) {
-        vm.currentBankOperation.category = vm.chargeCategories[0];
-        if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
-          vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
-        }
-        else {
-          vm.currentBankOperation.subCategory = "";
-        }
-      }
-      else {
-        vm.currentBankOperation.category = "";
-        vm.currentBankOperation.subCategory = "";
-      }
       vm.currentBankOperation.charge = vm.currentBankOperation.credit;
       delete vm.currentBankOperation.credit;
+      vm.currentBankOperation.category = "";
+      vm.currentBankOperation.subCategory = "";
     }
 
     function onCreditTab() {
-      if (vm.creditCategories && vm.creditCategories.length > 0) {
-        vm.currentBankOperation.category = vm.creditCategories[0];
-        if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
-          vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
-        }
-        else {
-          vm.currentBankOperation.subCategory = "";
-        }
-      }
-      else {
-        vm.currentBankOperation.category = "";
-        vm.currentBankOperation.subCategory = "";
-      }
       vm.currentBankOperation.credit = vm.currentBankOperation.charge;
       delete vm.currentBankOperation.charge;
+      vm.currentBankOperation.category = "";
+      vm.currentBankOperation.subCategory = "";
     }
 
     /**
@@ -260,6 +214,39 @@
      */
     function thirdPartyExistsOnServer() {
       return !!vm.currentBankOperation.thirdParty.name;
+    }
+
+    function selectFirstAvailableChargeCategories() {
+      if (vm.chargeCategories && vm.chargeCategories.length > 0) {
+        vm.currentBankOperation.category = vm.chargeCategories[0];
+
+        if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
+          vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
+        }
+        else {
+          vm.currentBankOperation.subCategory = "";
+        }
+      }
+      else {
+        vm.currentBankOperation.category = "";
+        vm.currentBankOperation.subCategory = "";
+      }
+    }
+
+    function selectFirstAvailableCreditCategories() {
+      if (vm.creditCategories && vm.creditCategories.length > 0) {
+        vm.currentBankOperation.category = vm.creditCategories[0];
+        if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
+          vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
+        }
+        else {
+          vm.currentBankOperation.subCategory = "";
+        }
+      }
+      else {
+        vm.currentBankOperation.category = "";
+        vm.currentBankOperation.subCategory = "";
+      }
     }
   }
 })();
