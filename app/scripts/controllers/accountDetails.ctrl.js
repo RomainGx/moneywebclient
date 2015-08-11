@@ -6,8 +6,8 @@
     .controller('AccountDetailsCtrl', AccountDetailsCtrl);
 
 
-  AccountDetailsCtrl.$inject = ['Accounts', 'BankOperations', 'Categories', 'SubCategories', 'ThirdParties', '$routeParams', '$q'];
-  function AccountDetailsCtrl(Accounts, BankOperations, Categories, SubCategories, ThirdParties, $routeParams, $q)
+  AccountDetailsCtrl.$inject = ['Accounts', 'BankOperations', 'Categories', 'SubCategories', 'ThirdParties', '$routeParams', '$q', '$scope'];
+  function AccountDetailsCtrl(Accounts, BankOperations, Categories, SubCategories, ThirdParties, $routeParams, $q, $scope)
   {
     var vm = this;
 
@@ -18,12 +18,15 @@
     this.chargeCategories = Categories.Charge.query();
     this.creditCategories = Categories.Credit.query();
 
+    this.categoryUnwatcher = null;
+
     this.addNewOperation = addNewOperation;
     this.onChargeTab = onChargeTab;
     this.onCreditTab = onCreditTab;
     this.save = save;
     this.saveBankOperation = saveBankOperation;
     this.saveThirdParty = saveThirdParty;
+
 
     // TODO Gérer le cas où on sélectionne une catégorie (ou si on marque le nom d'une nouvelle) : on doit vider la sous-catégorie
     // (sauf si la catégorie sélectionnée est identique à celle précédemment sélectionnée)
@@ -43,6 +46,8 @@
       else {
         selectFirstAvailableCreditCategories();
       }
+
+      watchCategoryValue();
     }
 
     function onChargeTab() {
@@ -64,6 +69,8 @@
      * l'opération elle-même.
      */
     function save() {
+      unwatchCategoryValue();
+
       selectExistingThirdPartyIfExists();
       selectExistingCategoryIfExists();
       selectExistingSubCategoryIfExists();
@@ -289,6 +296,27 @@
       else {
         vm.currentBankOperation.category = "";
         vm.currentBankOperation.subCategory = "";
+      }
+    }
+
+    /**
+     * Scrute la valeur de la catégorie afin de reseter la sous-catégorie si on supprime la catégorie.
+     */
+    function watchCategoryValue() {
+      vm.categoryUnwatcher = $scope.$watch('AccountDetailsCtrl.currentBankOperation.category', function(current, original) {
+        if (!current) {
+          vm.currentBankOperation.subCategory = "";
+        }
+      });
+    }
+
+    /**
+     * Annule la scrutation de la catégorie.
+     */
+    function unwatchCategoryValue() {
+      if (vm.categoryUnwatcher) {
+        vm.categoryUnwatcher();
+        vm.categoryUnwatcher = null;
       }
     }
   }
