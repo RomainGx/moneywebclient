@@ -6,14 +6,14 @@
     .controller('AccountDetailsCtrl', AccountDetailsCtrl);
 
 
-  AccountDetailsCtrl.$inject = ['Accounts', 'BankOperations', 'Categories', 'SubCategories', 'ThirdParties', '$routeParams', '$q', '$scope'];
-  function AccountDetailsCtrl(Accounts, BankOperations, Categories, SubCategories, ThirdParties, $routeParams, $q, $scope)
+  AccountDetailsCtrl.$inject = ['Accounts', 'BankOperations', 'Categories', 'SubCategories', 'ThirdParties', 'ngTableParams', '$routeParams', '$filter', '$q', '$scope'];
+  function AccountDetailsCtrl(Accounts, BankOperations, Categories, SubCategories, ThirdParties, ngTableParams, $routeParams, $filter, $q, $scope)
   {
     var vm = this;
 
     this.currentBankOperation = {};
     this.account = Accounts.get({accountId: $routeParams.accountId});
-    this.bankOperations = BankOperations.query({accountId: $routeParams.accountId});
+    this.bankOperations = [];
     this.thirdParties = ThirdParties.query();
     this.chargeCategories = Categories.Charge.query();
     this.creditCategories = Categories.Credit.query();
@@ -27,10 +27,24 @@
     this.saveBankOperation = saveBankOperation;
     this.saveThirdParty = saveThirdParty;
 
+    this.tableParams = new ngTableParams({
+      page: 1,
+      filters: ['operationDate', 'thirdParty.name'],
+      sorting: {
+        operationDate: 'asc'
+      }
+    }, {
+      counts: [],
+      defaultSort: 'asc',
+      getData: function($defer, params) {
+        vm.bankOperations = BankOperations.query({accountId: $routeParams.accountId}, function() {
+          vm.bankOperations = params.sorting() ? $filter('orderBy')(vm.bankOperations, params.orderBy()) : vm.bankOperations;
 
-    // TODO Gérer le cas où on sélectionne une catégorie (ou si on marque le nom d'une nouvelle) : on doit vider la sous-catégorie
-    // (sauf si la catégorie sélectionnée est identique à celle précédemment sélectionnée)
-
+          $defer.resolve(vm.bankOperations);
+          //$defer.resolve(vm.bankOperations.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+        });
+      }
+    });
 
     function addNewOperation(type) {
       vm.currentBankOperation = {

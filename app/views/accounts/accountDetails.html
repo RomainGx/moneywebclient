@@ -1,31 +1,22 @@
 <!--ACC {{AccountDetailsCtrl.account}}<br />-->
-BOP {{AccountDetailsCtrl.currentBankOperation}}<br />
+<!--BOP {{AccountDetailsCtrl.currentBankOperation}}<br /><br />-->
+<!--CAT {{AccountDetailsCtrl.chargeCategories}}<br />-->
 
 <h3>{{AccountDetailsCtrl.account.name}}</h3>
 
-<table>
-  <tr>
-    <th>Echéance</th>
-    <th>Num chèque</th>
-    <th>Date</th>
-    <th></th>
-    <th>Payé à</th>
-    <th>Débit</th>
-    <th>Crédit</th>
-    <th>Solde</th>
-  </tr>
-  <tr ng-repeat="operation in AccountDetailsCtrl.bankOperations | orderBy: 'operationDate'">
-    <td></td>
-    <td>{{operation.bankNoteNum}}</td>
-    <td>{{operation.operationDate | date: 'dd/MM/yyyy'}}</td>
-    <td>
+<table ng-table="AccountDetailsCtrl.tableParams" show-filter="true" class="table table-condensed">
+  <tr ng-repeat="operation in $data">
+    <td data-title="'Echéance'"></td>
+    <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>
+    <td data-title="'Date'" sortable="'operationDate'">{{operation.operationDate | date: 'dd/MM/yyyy'}}</td>
+    <td data-title="''">
       <span ng-if="operation.balanceState == 'PENDING'">P</span>
       <span ng-if="operation.balanceState == 'BALANCED'">R</span>
     </td>
-    <td>{{operation.thirdParty.name}}</td>
-    <td>{{operation.charge}}</td>
-    <td>{{operation.credit}}</td>
-    <td>TODO</td>
+    <td data-title="'Payé à'" sortable="'thirdParty.name'">{{operation.thirdParty.name}}</td>
+    <td data-title="'Débit'" sortable="'charge'">{{operation.charge}}</td>
+    <td data-title="'Crédit'" sortable="'credit'">{{operation.credit}}</td>
+    <td data-title="'Solde'">TODO</td>
   </tr>
 </table>
 
