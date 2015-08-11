@@ -105,6 +105,10 @@
       delete vm.currentBankOperation.charge;
     }
 
+    /**
+     * Sauvegarde tous les éléments consistutifs de l'opération bancaire en cours, puis
+     * l'opération elle-même.
+     */
     function save() {
       // TODO Check si existe dans thirdParties
       if (!vm.currentBankOperation.thirdParty.name) {
@@ -127,10 +131,15 @@
         });
     }
 
+    /**
+     * Sauvegarde le tiers sélectionné pour la nouvelle opération sur le serveur.
+     * Si le tiers existe déjà sur le serveur, alors il est simplement renvoyé.
+     * @returns {Function|promise} Le tiers sauvegardé ou déjà existant.
+     */
     function saveThirdParty() {
       var deferred = $q.defer();
 
-      if (!vm.currentBankOperation.thirdParty.name) {
+      if (!thirdPartyExistsOnServer()) {
         var tmpThirdParty = {name: vm.currentBankOperation.thirdParty};
 
         ThirdParties.save(tmpThirdParty, function (thirdParty) {
@@ -147,10 +156,16 @@
       return deferred.promise;
     }
 
+    /**
+     * Sauvegarde la catégorie sélectionnée pour la nouvelle opération sur le serveur.
+     * Si la catégorie existe déjà sur le serveur, alors elle est simplement renvoyée.
+     * @param {ThirdParty} thirdParty Le tiers sauvegardé précédemment.
+     * @returns {Function|promise} La catégorie sauvegardée ou déjà existante.
+     */
     function saveCategory(thirdParty) {
       var deferred = $q.defer();
 
-      if (!vm.currentBankOperation.category.name) {
+      if (!categoryExistsOnServer()) {
         var tmpCategory = {name: vm.currentBankOperation.category, type: vm.currentBankOperation.type};
 
         Categories.Common.save(tmpCategory, function (category) {
@@ -174,10 +189,16 @@
       return deferred.promise;
     }
 
+    /**
+     * Sauvegarde la sous-catégorie sélectionnée pour la nouvelle opération sur le serveur.
+     * Si la sous-catégorie existe déjà sur le serveur, alors elle est simplement renvoyée.
+     * @param {Category} category La catégorie sauvegardée précédemment.
+     * @returns {Function|promise} La sous-catégorie sauvegardée ou déjà existante.
+     */
     function saveSubCategory(category) {
       var deferred = $q.defer();
 
-      if (!vm.currentBankOperation.subCategory.name) {
+      if (!subCategoryExistsOnServer()) {
         var tmpSubCategory = {name: vm.currentBankOperation.subCategory, category: category};
 
         SubCategories.save(tmpSubCategory, function (subCategory) {
@@ -196,6 +217,11 @@
       return deferred.promise;
     }
 
+    /**
+     * Sauvegarde la nouvelle opération bancaire sur le serveur.
+     * @param {SubCategory} subCategory La sous-catégorie sauvegardée précédemment.
+     * @returns {Function|promise} La nouvelle opération bancaire.
+     */
     function saveBankOperation(subCategory) {
       var deferred = $q.defer();
 
@@ -207,6 +233,33 @@
       });
 
       return deferred.promise;
+    }
+
+    /**
+     * Indique si la catégorie sélectionnée dans {@link AccountDetailsCtrl#currentBankOperation} existe
+     * sur le serveur ou non.
+     * @returns {boolean} true si la catégorie existe sur le serveur, false sinon.
+     */
+    function categoryExistsOnServer() {
+      return !!vm.currentBankOperation.category.name;
+    }
+
+    /**
+     * Indique si la sous-catégorie sélectionnée dans {@link AccountDetailsCtrl#currentBankOperation} existe
+     * sur le serveur ou non.
+     * @returns {boolean} true si la sous-catégorie existe sur le serveur, false sinon.
+     */
+    function subCategoryExistsOnServer() {
+      return !!vm.currentBankOperation.subCategory.name;
+    }
+
+    /**
+     * Indique si le tiers sélectionné dans {@link AccountDetailsCtrl#currentBankOperation} existe
+     * sur le serveur ou non.
+     * @returns {boolean} true si le tiers existe sur le serveur, false sinon.
+     */
+    function thirdPartyExistsOnServer() {
+      return !!vm.currentBankOperation.thirdParty.name;
     }
   }
 })();
