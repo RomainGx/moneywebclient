@@ -64,17 +64,9 @@
      * l'opération elle-même.
      */
     function save() {
-      // TODO Check si existe dans thirdParties
-      if (!vm.currentBankOperation.thirdParty.name) {
-        for (var i=0 ; i < vm.thirdParties.length ; i++) {
-          if (vm.thirdParties[i].name === vm.currentBankOperation.thirdParty) {
-            vm.currentBankOperation.thirdParty = vm.thirdParties[i];
-            break;
-          }
-        }
-      }
-
-      // TODO Check si existe dans categories (+subcategory)
+      selectExistingThirdPartyIfExists();
+      selectExistingCategoryIfExists();
+      selectExistingSubCategoryIfExists();
 
       saveThirdParty()
         .then(saveCategory)
@@ -83,6 +75,57 @@
         .catch(function(handleReject) {
           alert('error ' + handleReject);
         });
+    }
+
+    /**
+     * Cette méthode vérifie si l'utilisateur a entré le nom d'un tiers sans le sélectionner via l'autocomplete.
+     * Dans ce cas, il cherche si le tiers existe déjà sur le serveur (ie. existe dans {@link AccountDetailsCtrl#thirdParties}).
+     */
+    function selectExistingThirdPartyIfExists() {
+      if (vm.currentBankOperation.thirdParty && !thirdPartyExistsOnServer()) {
+        for (var i=0 ; i < vm.thirdParties.length ; i++) {
+          if (vm.thirdParties[i].name === vm.currentBankOperation.thirdParty) {
+            vm.currentBankOperation.thirdParty = vm.thirdParties[i];
+            break;
+          }
+        }
+      }
+    }
+
+    /**
+     * Cette méthode vérifie si l'utilisateur a entré le nom d'une catégorie sans la sélectionner via l'autocomplete.
+     * Dans ce cas, il cherche si la catégorie existe déjà sur le serveur (ie. existe dans {@link AccountDetailsCtrl#chargeCategories}
+     * ou {@link AccountDetailsCtrl#creditCategories} selon le type d'opération).
+     */
+    function selectExistingCategoryIfExists() {
+      if (vm.currentBankOperation.category && !categoryExistsOnServer()) {
+        var categories = vm.currentBankOperation.type === 'CHARGE' ? vm.chargeCategories : vm.creditCategories;
+
+        for (var i=0 ; i < categories.length ; i++) {
+          if (categories[i].name === vm.currentBankOperation.category) {
+            vm.currentBankOperation.category = categories[i];
+            break;
+          }
+        }
+      }
+    }
+
+    /**
+     * Cette méthode vérifie si l'utilisateur a entré le nom d'une sous-catégorie sans la sélectionner via l'autocomplete.
+     * Dans ce cas, il cherche si la sous-catégorie existe déjà sur le serveur (ie. existe parmi les sous-catégories de
+     * {@link AccountDetailsCtrl#chargeCategories} ou de {@link AccountDetailsCtrl#creditCategories} selon le type d'opération).
+     */
+    function selectExistingSubCategoryIfExists() {
+      if (vm.currentBankOperation.subCategory && !subCategoryExistsOnServer()) {
+        var categories = vm.currentBankOperation.type === 'CHARGE' ? vm.chargeCategories : vm.creditCategories;
+
+        for (var i=0 ; i < categories.subCategories.length ; i++) {
+          if (categories.subCategories[i].name === vm.currentBankOperation.subCategory) {
+            vm.currentBankOperation.subCategory = categories.subCategories[i];
+            break;
+          }
+        }
+      }
     }
 
     /**
