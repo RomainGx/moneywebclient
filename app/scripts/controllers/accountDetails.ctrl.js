@@ -131,9 +131,9 @@
       var deferred = $q.defer();
 
       if (!vm.currentBankOperation.thirdParty.name) {
-        vm.currentBankOperation.thirdParty = {name: vm.currentBankOperation.thirdParty};
+        var tmpThirdParty = {name: vm.currentBankOperation.thirdParty};
 
-        ThirdParties.save(vm.currentBankOperation.thirdParty, function (thirdParty) {
+        ThirdParties.save(tmpThirdParty, function (thirdParty) {
           vm.currentBankOperation.thirdParty = thirdParty;
           deferred.resolve(thirdParty);
         }, function () {
@@ -151,9 +151,9 @@
       var deferred = $q.defer();
 
       if (!vm.currentBankOperation.category.name) {
-        vm.currentBankOperation.category = {name: vm.currentBankOperation.category, type: vm.currentBankOperation.type};
+        var tmpCategory = {name: vm.currentBankOperation.category, type: vm.currentBankOperation.type};
 
-        Categories.Common.save(vm.currentBankOperation.category, function (category) {
+        Categories.Common.save(tmpCategory, function (category) {
           vm.currentBankOperation.category = category;
 
           if (vm.currentBankOperation.category.type == 'CHARGE') {
@@ -178,9 +178,9 @@
       var deferred = $q.defer();
 
       if (!vm.currentBankOperation.subCategory.name) {
-        vm.currentBankOperation.subCategory = {name: vm.currentBankOperation.subCategory, category: category};
+        var tmpSubCategory = {name: vm.currentBankOperation.subCategory, category: category};
 
-        SubCategories.save(vm.currentBankOperation.subCategory, function (subCategory) {
+        SubCategories.save(tmpSubCategory, function (subCategory) {
           vm.currentBankOperation.subCategory = subCategory;
           category.subCategories.push(subCategory);
 
