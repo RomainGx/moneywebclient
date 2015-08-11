@@ -118,93 +118,95 @@
 
       // TODO Check si existe dans categories (+subcategory)
 
-
-      //saveBankOperation();
-
-      if (!vm.currentBankOperation.thirdParty.name) {
-        saveThirdParty();
-      }
-      else if (!vm.currentBankOperation.category.name) {
-        saveCategory();
-      }
-      else if (!vm.currentBankOperation.subCategory.name) {
-        saveSubCategory();
-      }
-      else {
-        saveBankOperation();
-      }
-    }
-
-    function saveBankOperation() {
-      BankOperations.save({accountId: vm.account.id}, vm.currentBankOperation, function (bankOperation) {
-        alert('ok bank op');
-        vm.bankOperations.push(bankOperation);
-      }, function () {
-        alert('error bank op');
-      });
+      saveThirdParty()
+        .then(saveCategory)
+        .then(saveSubCategory)
+        .then(saveBankOperation)
+        .catch(function(handleReject) {
+          alert('error ' + handleReject);
+        });
     }
 
     function saveThirdParty() {
-      vm.currentBankOperation.thirdParty = {name: vm.currentBankOperation.thirdParty};
+      var deferred = $q.defer();
 
-      ThirdParties.save(vm.currentBankOperation.thirdParty, function (thirdParty) {
-        alert('ok TP');
+      if (!vm.currentBankOperation.thirdParty.name) {
+        vm.currentBankOperation.thirdParty = {name: vm.currentBankOperation.thirdParty};
 
-        vm.currentBankOperation.thirdParty = thirdParty;
-        if (!vm.currentBankOperation.category.name) {
-          saveCategory();
-        }
-        else if (!vm.currentBankOperation.subCategory.name) {
-          saveSubCategory();
-        }
-        else {
-          saveBankOperation();
-        }
-      }, function () {
-        alert('error tp');
-      });
+        ThirdParties.save(vm.currentBankOperation.thirdParty, function (thirdParty) {
+          vm.currentBankOperation.thirdParty = thirdParty;
+          deferred.resolve(thirdParty);
+        }, function () {
+          deferred.reject('Failed saving third party');
+        });
+      }
+      else {
+        deferred.resolve(vm.currentBankOperation.thirdParty);
+      }
+
+      return deferred.promise;
     }
 
-    function saveCategory() {
-      vm.currentBankOperation.category = {name: vm.currentBankOperation.category, type: vm.currentBankOperation.type};
+    function saveCategory(thirdParty) {
+      var deferred = $q.defer();
 
-      Categories.Common.save(vm.currentBankOperation.category, function (category) {
-        alert('ok categ');
+      if (!vm.currentBankOperation.category.name) {
+        vm.currentBankOperation.category = {name: vm.currentBankOperation.category, type: vm.currentBankOperation.type};
 
-        vm.currentBankOperation.category = category;
+        Categories.Common.save(vm.currentBankOperation.category, function (category) {
+          vm.currentBankOperation.category = category;
 
-        if (vm.currentBankOperation.category.type == 'CHARGE') {
-          vm.chargeCategories.push(category);
-        }
-        else {
-          vm.creditCategories.push(category);
-        }
+          if (vm.currentBankOperation.category.type == 'CHARGE') {
+            vm.chargeCategories.push(category);
+          }
+          else {
+            vm.creditCategories.push(category);
+          }
+          deferred.resolve(category);
+        }, function () {
+          deferred.reject('Failed saving category');
+        });
+      }
+      else {
+        deferred.resolve(vm.currentBankOperation.category);
+      }
 
-
-        if (!vm.currentBankOperation.subCategory.name) {
-          saveSubCategory();
-        }
-        else {
-          saveBankOperation();
-        }
-      }, function () {
-        alert('error categ');
-      });
+      return deferred.promise;
     }
 
-    function saveSubCategory() {
-      vm.currentBankOperation.subCategory = {name: vm.currentBankOperation.subCategory, category: vm.currentBankOperation.category};
+    function saveSubCategory(category) {
+      var deferred = $q.defer();
 
-      SubCategories.save(vm.currentBankOperation.subCategory, function (subCategory) {
-        alert('ok subCategory');
+      if (!vm.currentBankOperation.subCategory.name) {
+        vm.currentBankOperation.subCategory = {name: vm.currentBankOperation.subCategory, category: category};
 
-        vm.currentBankOperation.subCategory = subCategory;
-        vm.currentBankOperation.category.subCategories.push(subCategory);
+        SubCategories.save(vm.currentBankOperation.subCategory, function (subCategory) {
+          vm.currentBankOperation.subCategory = subCategory;
+          category.subCategories.push(subCategory);
 
-        saveBankOperation();
+          deferred.resolve(subCategory);
+        }, function () {
+          deferred.reject('Failed saving subcategory');
+        });
+      }
+      else {
+        deferred.resolve(vm.currentBankOperation.subCategory);
+      }
+
+      return deferred.promise;
+    }
+
+    function saveBankOperation(subCategory) {
+      var deferred = $q.defer();
+
+      BankOperations.save({accountId: vm.account.id}, vm.currentBankOperation, function (bankOperation) {
+        vm.bankOperations.push(bankOperation);
+        deferred.resolve(bankOperation);
       }, function () {
-        alert('error subcateg');
+        deferred.reject('Failed saving bank operation');
       });
+
+      return deferred.promise;
     }
   }
 })();
