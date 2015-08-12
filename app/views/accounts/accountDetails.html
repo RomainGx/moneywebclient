@@ -17,16 +17,16 @@
     <td data-title="'Payé à'" sortable="'thirdParty.name'">{{operation.thirdParty.name}}</td>
     <td data-title="'Débit'" sortable="'charge'">{{operation.charge | currency}}</td>
     <td data-title="'Crédit'" sortable="'credit'">{{operation.credit | currency}}</td>
-    <td data-title="'Solde'">{{operation.balance | currency}}</td>
+    <td data-title="'Solde'" ng-class="{negative: operation.balance < 0}">{{operation.balance | currency}}</td>
   </tr>
   <tr>
     <td colspan="9">
-      Solde du jour : {{AccountDetailsCtrl.account.currentBalance | currency}}
+      Solde du jour : <span ng-class="{negative: AccountDetailsCtrl.account.currentBalance < 0}">{{AccountDetailsCtrl.account.currentBalance | currency}}</span>
     </td>
   </tr>
   <tr>
     <td colspan="9">
-      Solde final : {{AccountDetailsCtrl.account.finalBalance | currency}}
+      Solde final : <span ng-class="{negative: AccountDetailsCtrl.account.finalBalance < 0}">{{AccountDetailsCtrl.account.finalBalance | currency}}</span>
     </td>
   </tr>
 </table>

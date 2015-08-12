@@ -17,7 +17,8 @@ angular
     'ngSanitize',
     'ngTouch',
     'ngTable',
-    'ui.bootstrap'
+    'ui.bootstrap',
+    'door3.css'
   ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -39,7 +40,8 @@ angular
       .when('/accounts/:accountId', {
         templateUrl: 'views/accounts/accountDetails.html',
         controller: 'AccountDetailsCtrl',
-        controllerAs: 'AccountDetailsCtrl'
+        controllerAs: 'AccountDetailsCtrl',
+        css: 'styles/accountDetails.css'
       })
       .otherwise({
         redirectTo: '/accounts'
