@@ -6,6 +6,7 @@
 
 <table ng-table="AccountDetailsCtrl.tableParams" show-filter="true" class="table table-condensed">
   <tr ng-repeat="operation in $data">
+    <td data-title="'ID'">{{operation.id}}</td>
     <td data-title="'Echéance'"></td>
     <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>
     <td data-title="'Date'" sortable="'operationDate'">{{operation.operationDate | date: 'dd/MM/yyyy'}}</td>
@@ -14,9 +15,19 @@
       <span ng-if="operation.balanceState == 'BALANCED'">R</span>
     </td>
     <td data-title="'Payé à'" sortable="'thirdParty.name'">{{operation.thirdParty.name}}</td>
-    <td data-title="'Débit'" sortable="'charge'">{{operation.charge}}</td>
-    <td data-title="'Crédit'" sortable="'credit'">{{operation.credit}}</td>
-    <td data-title="'Solde'">TODO</td>
+    <td data-title="'Débit'" sortable="'charge'">{{operation.charge | currency}}</td>
+    <td data-title="'Crédit'" sortable="'credit'">{{operation.credit | currency}}</td>
+    <td data-title="'Solde'">{{operation.balance | currency}}</td>
+  </tr>
+  <tr>
+    <td colspan="9">
+      Solde du jour : {{AccountDetailsCtrl.account.currentBalance | currency}}
+    </td>
+  </tr>
+  <tr>
+    <td colspan="9">
+      Solde final : {{AccountDetailsCtrl.account.finalBalance | currency}}
+    </td>
   </tr>
 </table>
 

@@ -11,14 +11,15 @@
   {
     var vm = this;
 
+    this.tableParams = null;
+    this.categoryUnwatcher = null;
+
     this.currentBankOperation = {};
     this.account = Accounts.get({accountId: $routeParams.accountId});
     this.bankOperations = [];
     this.thirdParties = ThirdParties.query();
     this.chargeCategories = Categories.Charge.query();
     this.creditCategories = Categories.Credit.query();
-
-    this.categoryUnwatcher = null;
 
     this.addNewOperation = addNewOperation;
     this.onChargeTab = onChargeTab;
@@ -27,25 +28,86 @@
     this.saveBankOperation = saveBankOperation;
     this.saveThirdParty = saveThirdParty;
 
-    this.tableParams = new ngTableParams({
-      page: 1,
-      filters: ['operationDate', 'thirdParty.name'],
-      sorting: {
-        operationDate: 'asc'
-      }
-    }, {
-      counts: [],
-      defaultSort: 'asc',
-      getData: function($defer, params) {
-        vm.bankOperations = BankOperations.query({accountId: $routeParams.accountId}, function() {
-          vm.bankOperations = params.sorting() ? $filter('orderBy')(vm.bankOperations, params.orderBy()) : vm.bankOperations;
 
-          $defer.resolve(vm.bankOperations);
-          //$defer.resolve(vm.bankOperations.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-        });
-      }
-    });
+    configTableParams();
 
+
+    /**
+     * Configure ng-table pour l'affichage des opérations bancaires.
+     */
+    function configTableParams() {
+      vm.tableParams = new ngTableParams({
+        page: 1,
+        sorting: {
+          operationDate: 'asc'
+        }
+      }, {
+        counts: [],
+        defaultSort: 'asc',
+        getData: function($defer, params) {
+          vm.bankOperations = BankOperations.query({accountId: $routeParams.accountId}, function() {
+            computeBalanceOnBankOperations();
+
+            var orderBy = getOrderBy(params);
+            vm.bankOperations = params.sorting() ? $filter('orderBy')(vm.bankOperations, orderBy) : vm.bankOperations;
+
+            $defer.resolve(vm.bankOperations);
+            //$defer.resolve(vm.bankOperations.slice((params.page() - 1) * params.count(), params.page() * params.count()));
+          });
+        }
+      });
+    }
+
+    /**
+     * Paramètre la clause order by en fonction du choix de l'utilisateur.
+     * Si les opérations sont triées sur un autre élément que la date, alors on ajoute 2 critères de tri secondaires :
+     * la date et l'ID.
+     * @param {object} params Paramètres fournis par ng-table, qui contiennent la clause orderBy.
+     * @returns {*[]} Clause orderBy à utiliser.
+     */
+    function getOrderBy(params) {
+      var orderBy = [params.orderBy()[0]];
+
+      if (orderBy[0] === '-operationDate') {
+        orderBy.push('-id');
+      }
+      else if (orderBy[0] === '+operationDate') {
+        orderBy.push('+id');
+      }
+      else {
+        orderBy.push('+operationDate');
+        orderBy.push('+id');
+      }
+
+      return orderBy;
+    }
+
+    /**
+     * Calcule, pour chaque opération, le solde associé.
+     * Ce calcul est lié à l'ordre dans lequel les opérations sont triées.
+     */
+    function computeBalanceOnBankOperations() {
+      var balance = vm.account.startingBalance;
+      var today = moment().unix() * 1000;
+      var currentBalance = 0;
+
+      for (var i=0 ; i < vm.bankOperations.length ; i++) {
+        balance += vm.bankOperations[i].credit;
+        balance -= vm.bankOperations[i].charge;
+        vm.bankOperations[i].balance = balance;
+
+        if (vm.bankOperations[i].operationDate <= today) {
+          currentBalance = balance;
+        }
+      }
+
+      vm.account.currentBalance = currentBalance;
+    }
+
+    /**
+     * Prépare le modèle pour la saisie d'une nouvelle opération.
+     * @param type Type d'opération à saisir (débit ou crédit).
+     */
     function addNewOperation(type) {
       vm.currentBankOperation = {
         account: vm.account,
