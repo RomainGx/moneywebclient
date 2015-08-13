@@ -1,3 +1,15 @@
+body {
+  font-family: 'Verdana', 'Tahoma', 'serif';
+  font-size: 10px;
+}
+
+#numOperations {
+  font-weight: bold;
+  text-align: right;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
 .negative {
   color: red;
 }
@@ -5,3 +17,18 @@
 .future {
   background-color: #eeeeee;
 }
+
+.amount {
+  text-align: right;
+}
+
+.currentBalance, .finalBalance, .currentBalanceHeader, .finalBalanceHeader {
+  font-weight: bold;
+  font-size: 1.1em;
+}
+
+td.currentBalanceHeader, td.finalBalanceHeader {
+  text-transform: uppercase;
+  text-align: right;
+}
+

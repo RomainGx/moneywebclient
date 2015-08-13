@@ -4,6 +4,7 @@
     <file url="file://$PROJECT_DIR$/app/scripts/app.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/accountDetails.ctrl.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/editAccount.ctrl.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/styles/accountDetails.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/views/accounts/accounts.html" charset="UTF-8" />
   </component>
 </project>
