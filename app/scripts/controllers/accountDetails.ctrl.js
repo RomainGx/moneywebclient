@@ -13,6 +13,9 @@
 
     this.tableParams = null;
     this.categoryUnwatcher = null;
+    this.filterUnwatcher = null;
+    this.today = moment().unix() * 1000;
+    this.totalNumOperations = 0;
 
     this.currentBankOperation = {};
     this.account = Accounts.get({accountId: $routeParams.accountId});
@@ -27,6 +30,8 @@
     this.save = save;
     this.saveBankOperation = saveBankOperation;
     this.saveThirdParty = saveThirdParty;
+    this.watchFilter = watchFilter;
+    this.unwatchFilter = unwatchFilter;
 
 
     configTableParams();
@@ -46,16 +51,37 @@
         defaultSort: 'asc',
         getData: function($defer, params) {
           vm.bankOperations = BankOperations.query({accountId: $routeParams.accountId}, function() {
+            computeReadableDatesOnBankOperations();
             computeBalanceOnBankOperations();
+
+            vm.totalNumOperations = vm.bankOperations.length;
 
             var orderBy = getOrderBy(params);
             vm.bankOperations = params.sorting() ? $filter('orderBy')(vm.bankOperations, orderBy) : vm.bankOperations;
+
+            if (vm.search) {
+              vm.search = vm.search.toLowerCase();
+              vm.bankOperations = $filter('filter')(vm.bankOperations, searchFilter);
+            }
 
             $defer.resolve(vm.bankOperations);
             //$defer.resolve(vm.bankOperations.slice((params.page() - 1) * params.count(), params.page() * params.count()));
           });
         }
       });
+    }
+
+    /**
+     * Filtre une opération bancaire en fonction de la saisie de l'utilisateur dans le champ Recherche.
+     * @param {BankOperation} bankOperation Opération pour laquelle déterminer si elle passe le filtre.
+     * @param {number} index Index de l'opération dans le tableau.
+     * @param {BankOperation[]} bankOperations Liste des opérations bancaires.
+     * @returns {string|boolean|*|ThirdParty}
+     */
+    function searchFilter(bankOperation, index, bankOperations) {
+      return ((bankOperation.bankNoteNum && bankOperation.bankNoteNum.toLowerCase().indexOf(vm.search) > -1) ||
+        (bankOperation.operationDateHuman && bankOperation.operationDateHuman.toLowerCase().indexOf(vm.search) > -1) ||
+        (bankOperation.thirdParty && bankOperation.thirdParty.name && bankOperation.thirdParty.name.toLowerCase().indexOf(vm.search) > -1));
     }
 
     /**
@@ -83,12 +109,21 @@
     }
 
     /**
+     * Ajoute, pour chaque opération, la date dans un format lisible par un humain et par le filtre
+     * de recherche.
+     */
+    function computeReadableDatesOnBankOperations() {
+      for (var i=0 ; i < vm.bankOperations.length ; i++) {
+        vm.bankOperations[i].operationDateHuman = moment.unix(vm.bankOperations[i].operationDate / 1000).format('DD/MM/YYYY');
+      }
+    }
+
+    /**
      * Calcule, pour chaque opération, le solde associé.
      * Ce calcul est lié à l'ordre dans lequel les opérations sont triées.
      */
     function computeBalanceOnBankOperations() {
       var balance = vm.account.startingBalance;
-      var today = moment().unix() * 1000;
       var currentBalance = 0;
 
       for (var i=0 ; i < vm.bankOperations.length ; i++) {
@@ -96,7 +131,7 @@
         balance -= vm.bankOperations[i].charge;
         vm.bankOperations[i].balance = balance;
 
-        if (vm.bankOperations[i].operationDate <= today) {
+        if (vm.bankOperations[i].operationDate <= vm.today) {
           currentBalance = balance;
         }
       }
@@ -393,6 +428,25 @@
       if (vm.categoryUnwatcher) {
         vm.categoryUnwatcher();
         vm.categoryUnwatcher = null;
+      }
+    }
+
+    /**
+     * Scrute la valeur du filtre de recherche afin de mettre à jour les opérations bancaires affichées.
+     */
+    function watchFilter() {
+      vm.filterUnwatcher = $scope.$watch("AccountDetailsCtrl.search", function () {
+        vm.tableParams.reload();
+      });
+    }
+
+    /**
+     * Annule la scrutation du filtre de recherche.
+     */
+    function unwatchFilter() {
+      if (vm.filterUnwatcher) {
+        vm.filterUnwatcher();
+        vm.filterUnwatcher = null;
       }
     }
   }
