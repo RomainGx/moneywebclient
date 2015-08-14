@@ -84,7 +84,8 @@ angular
  * @property {number} id Identifiant de l'opération bancaire.
  * @property {Account} account Compte sur lequel a été effectuée l'opération.
  * @property {string} bankNoteNum Numéro de chèque.
- * @property {string} operationDate Date à laquelle est passée l'opération.
+ * @property {number} operationDate Date (au format UNIX en ms) à laquelle est passée l'opération.
+ * @property {string} operationDateHuman Date dans un format lisible par un humain.
  * @property {string} balanceState Etat de l'opération parmis "NOT_BALANCED", "PENDING", "BALANCED".
  * @property {ThirdParty} thirdParty Tiers à l'origine ou à destination de l'opération.
  * @property [number} charge Montant du débit.

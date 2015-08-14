@@ -14,7 +14,10 @@
 <p id="numOperations">{{AccountDetailsCtrl.bankOperations.length}} / {{AccountDetailsCtrl.totalNumOperations}} opérations</p>
 
 <table ng-table="AccountDetailsCtrl.tableParams" show-filter="false" class="table table-condensed">
-  <tr ng-repeat="operation in $data" ng-class="{ 'future': operation.operationDate > AccountDetailsCtrl.today }">
+  <tr ng-repeat="operation in $data"
+      class="bankOperation"
+      ng-class="{ 'future': operation.operationDate > AccountDetailsCtrl.today }"
+      ng-click="AccountDetailsCtrl.editOperation(operation)">
     <td data-title="'ID'">{{operation.id}}</td>
     <td data-title="'Echéance'"></td>
     <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>

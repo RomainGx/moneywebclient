@@ -30,6 +30,7 @@
     this.save = save;
     this.saveBankOperation = saveBankOperation;
     this.saveThirdParty = saveThirdParty;
+    this.editOperation = editOperation;
     this.watchFilter = watchFilter;
     this.unwatchFilter = unwatchFilter;
 
@@ -348,6 +349,15 @@
       });
 
       return deferred.promise;
+    }
+
+    /**
+     *
+     * @param {BankOperation} operation Opération à modifier.
+     */
+    function editOperation(operation) {
+      vm.currentBankOperation = operation;
+      vm.currentBankOperation.operationDate = moment.unix(operation.operationDate / 1000).format('DD/MM/YYYY');
     }
 
     /**
