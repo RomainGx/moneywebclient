@@ -1,11 +1,67 @@
-body {
-  font-family: 'Verdana', 'Tahoma', 'serif';
-  font-size: 10px;
-}
-
 .bankOperation:hover {
   background-color: #e3f2fd;
   cursor: pointer;
+}
+
+.editTab {
+  border:1px solid #ddd;
+  border-top:inherit;
+  border-radius: 4px 4px 0 0;
+  padding:10px;
+}
+
+.editTab .newOperationBtn {
+  margin-bottom: 20px;
+}
+
+.editTab .actionBtns {
+  float: right;
+}
+
+.editTab .actionBtns button, .editTab .newOperationBtn {
+  width: 135px;
+}
+
+.clear {
+  clear: both;
+}
+
+.editPanelLeft {
+  float: left;
+  width: 75%;
+  padding-right: 25px;
+}
+
+.editPanelRight {
+  float: right;
+  width: 25%;
+}
+
+.editPanelLeft table, .editPanelRight table {
+  width: 100%;
+}
+
+.editPanelLeft table td, .editPanelRight table td {
+  padding-bottom: 2px;
+}
+
+.editPanelLeft table td:first-child, .editPanelRight table td:first-child {
+  width: 1%;
+  white-space: nowrap;
+  padding-right: 15px;
+}
+
+.editPanelLeft table .notes {
+  width: 100%;
+  height: 50px;
+}
+
+.editPanelLeft table td.notesHeader {
+  vertical-align: top;
+}
+
+.input-sm {
+  height: 25px;
 }
 
 #numOperations {
@@ -13,6 +69,10 @@ body {
   text-align: right;
   margin-top: 10px;
   margin-bottom: 15px;
+}
+
+.form-control.thirdParty {
+  width: 100%;
 }
 
 .negative {

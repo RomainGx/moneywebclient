@@ -1,0 +1,75 @@
+<div class="editTab">
+  <button type="button"
+          class="btn btn-primary btn-xs newOperationBtn"
+          ng-click="AccountDetailsCtrl.addNewOperation('CHARGE')">Nouveau</button>
+
+  <div>
+    <div class="editPanelLeft">
+      <table>
+        <tr>
+          <td>Payé à</td>
+          <td>
+            <input type="text"
+                   ng-model="AccountDetailsCtrl.currentBankOperation.thirdParty"
+                   typeahead="thirdParty as thirdParty.name for thirdParty in AccountDetailsCtrl.thirdParties | filter:$viewValue "
+                   typeahead-min-length="0"
+                   class="form-control input-sm thirdParty"
+                   required/>
+          </td>
+        </tr>
+        <tr>
+          <td>Catégorie</td>
+          <td>
+            <input type="text"
+                   ng-model="AccountDetailsCtrl.currentBankOperation.category"
+                   typeahead="category as category.name for category in AccountDetailsCtrl.chargeCategories | filter:$viewValue "
+                   typeahead-min-length="0"
+                   class="form-control input-sm"
+                   required/>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>Sous-catégorie</td>
+          <td>
+            <input type="text"
+                   ng-disabled="!AccountDetailsCtrl.currentBankOperation.category"
+                   ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
+                   typeahead="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | filter:$viewValue "
+                   typeahead-min-length="0"
+                   class="form-control input-sm"/>
+          </td>
+        </tr>
+        <tr>
+          <td class="notesHeader">Notes</td>
+          <td>
+            <textarea ng-model="AccountDetailsCtrl.currentBankOperation.notes" class="form-control notes"></textarea>
+          </td>
+        </tr>
+      </table>
+    </div>
+    <div class="editPanelRight">
+      <table>
+        <tr>
+          <td>Num chèque</td>
+          <td><input type="text" class="form-control input-sm" ng-model="AccountDetailsCtrl.currentBankOperation.bankNoteNum"/></td>
+        </tr>
+        <tr>
+          <td>Date</td>
+          <td><input type="text" class="form-control input-sm" ng-model="AccountDetailsCtrl.currentBankOperation.operationDate" required/></td>
+        </tr>
+        <tr>
+          <td>Montant</td>
+          <td><input type="number" class="form-control input-sm" ng-model="AccountDetailsCtrl.currentBankOperation.charge" required/></td>
+        </tr>
+      </table>
+    </div>
+    <br class="clear"/>
+  </div>
+
+  <div class="actionBtns">
+    <button type="submit" class="btn btn-primary btn-xs" ng-click="AccountDetailsCtrl.save()">Saisir</button>
+    <button type="reset" class="btn btn-xs">Annuler</button>
+  </div>
+  <br class="clear"/>
+</div>

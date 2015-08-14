@@ -28,17 +28,17 @@ angular
       //  controllerAs: 'main'
       //})
       .when('/editAccount', {
-        templateUrl: 'views/accounts/editAccount.html',
+        templateUrl: 'views/editAccount.html',
         controller: 'EditAccountCtrl',
         controllerAs: 'EditAccountCtrl'
       })
       .when('/accounts', {
-        templateUrl: 'views/accounts/accounts.html',
+        templateUrl: 'views/accounts.html',
         controller: 'AccountsCtrl',
         controllerAs: 'AccountsCtrl'
       })
       .when('/accounts/:accountId', {
-        templateUrl: 'views/accounts/accountDetails.html',
+        templateUrl: 'views/accountDetails.html',
         controller: 'AccountDetailsCtrl',
         controllerAs: 'AccountDetailsCtrl',
         css: 'styles/accountDetails.css'

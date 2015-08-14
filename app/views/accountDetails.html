@@ -1,0 +1,61 @@
+<!--ACC {{AccountDetailsCtrl.bankOperations}}<br />-->
+<!--BOP {{AccountDetailsCtrl.currentBankOperation}}<br /><br />-->
+<!--CAT {{AccountDetailsCtrl.chargeCategories}}<br />-->
+
+<h3>{{AccountDetailsCtrl.account.name}}</h3>
+
+<input type="text"
+       class="input-filter form-control"
+       ng-model="AccountDetailsCtrl.search"
+       ng-focus="AccountDetailsCtrl.watchFilter()"
+       ng-blur="AccountDetailsCtrl.unwatchFilter()"
+       placeholder="Rechercher un tiers, une date, un numéro de chèque"/>
+
+<p id="numOperations">{{AccountDetailsCtrl.bankOperations.length}} / {{AccountDetailsCtrl.totalNumOperations}} opérations</p>
+
+<table ng-table="AccountDetailsCtrl.tableParams" show-filter="false" class="table table-condensed">
+  <tr ng-repeat="operation in $data"
+      class="bankOperation"
+      ng-class="{ 'future': operation.operationDate > AccountDetailsCtrl.today }"
+      ng-click="AccountDetailsCtrl.editOperation(operation)">
+    <td data-title="'ID'">{{operation.id}}</td>
+    <td data-title="'Echéance'"></td>
+    <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>
+    <td data-title="'Date'" sortable="'operationDate'">{{operation.operationDateHuman}}</td>
+    <td data-title="''">
+      <span ng-if="operation.balanceState == 'PENDING'">P</span>
+      <span ng-if="operation.balanceState == 'BALANCED'">R</span>
+    </td>
+    <td data-title="'Payé à'" sortable="'thirdParty.name'">{{operation.thirdParty.name}}</td>
+    <td data-title="'Débit'" sortable="'charge'" class="amount">{{operation.charge | currency}}</td>
+    <td data-title="'Crédit'" sortable="'credit'" class="amount">{{operation.credit | currency}}</td>
+    <td data-title="'Solde'" ng-class="{negative: operation.balance < 0}" class="amount">{{operation.balance | currency}}</td>
+  </tr>
+  <tr>
+    <td colspan="8" class="currentBalanceHeader">
+      Solde du jour
+    </td>
+    <td class="currentBalance amount">
+      <span ng-class="{negative: AccountDetailsCtrl.account.currentBalance < 0}">{{AccountDetailsCtrl.account.currentBalance | currency}}</span>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="8" class="finalBalanceHeader">
+      Solde final
+    </td>
+    <td class="finalBalance amount">
+      <span ng-class="{negative: AccountDetailsCtrl.account.finalBalance < 0}">{{AccountDetailsCtrl.account.finalBalance | currency}}</span>
+    </td>
+  </tr>
+</table>
+
+<form novalidate>
+  <tabset justified="true">
+    <tab heading="Débit" select="AccountDetailsCtrl.onChargeTab()">
+      <ng-include src="'views/chargeOperationTab.html'"/>
+    </tab>
+    <tab heading="Crédit" select="AccountDetailsCtrl.onCreditTab()">
+      <ng-include src="'views/creditOperationTab.html'"/>
+    </tab>
+  </tabset>
+</form>

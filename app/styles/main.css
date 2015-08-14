@@ -7,6 +7,8 @@
 
 body {
   padding: 0;
+  font-family: 'Verdana', 'Tahoma', 'serif';
+  font-size: 12px;
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
@@ -32,6 +34,7 @@ body {
 
 /* Custom page footer */
 .footer {
+  margin-top: 25px;
   padding-top: 19px;
   color: #777;
   border-top: 1px solid #e5e5e5;
@@ -79,5 +82,11 @@ body {
   /* Remove the bottom border on the jumbotron for visual effect */
   .jumbotron {
     border-bottom: 0;
+  }
+}
+
+@media screen and (min-width: 1200px) {
+  .container {
+    max-width: 1170px;
   }
 }
