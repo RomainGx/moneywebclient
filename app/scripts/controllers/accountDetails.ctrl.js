@@ -31,6 +31,7 @@
     this.saveBankOperation = saveBankOperation;
     this.saveThirdParty = saveThirdParty;
     this.editOperation = editOperation;
+    this.handleDateChangeByKeyboard = handleDateChangeByKeyboard;
     this.watchFilter = watchFilter;
     this.unwatchFilter = unwatchFilter;
 
@@ -358,6 +359,27 @@
     function editOperation(operation) {
       vm.currentBankOperation = operation;
       vm.currentBankOperation.operationDate = moment.unix(operation.operationDate / 1000).format('DD/MM/YYYY');
+    }
+
+    /**
+     * Ajoute ou retire un jour à la date en appuyant sur les touches '+' ou '-' du clavier.
+     * Le modèle n'est pas mis à jour avec le caractère '+' ou '*', car la méthode appelle event.preventDefault().
+     * @param event Evénement déclencheur, qui contient le code de la touche tapée.
+     * @returns {boolean} false pour empêcher la saisie du '+' ou du '-'
+     */
+    function handleDateChangeByKeyboard(event) {
+      var code = event.which ? event.which : event.keyCode;
+
+      if (code === 43 || code == 61) {
+        vm.currentBankOperation.operationDate = moment(vm.currentBankOperation.operationDate, 'DD/MM/YYYY').add('1', 'day').format('DD/MM/YYYY');
+        event.preventDefault();
+        return false;
+      }
+      else if (code === 45 || code == 54) {
+        vm.currentBankOperation.operationDate = moment(vm.currentBankOperation.operationDate, 'DD/MM/YYYY').add('-1', 'day').format('DD/MM/YYYY');
+        event.preventDefault();
+        return false;
+      }
     }
 
     /**

@@ -58,7 +58,13 @@
         </tr>
         <tr>
           <td>Date</td>
-          <td><input type="text" class="form-control input-sm" ng-model="AccountDetailsCtrl.currentBankOperation.operationDate" required/></td>
+          <td>
+            <input type="text"
+                   class="form-control input-sm"
+                   ng-model="AccountDetailsCtrl.currentBankOperation.operationDate"
+                   ng-keypress="AccountDetailsCtrl.handleDateChangeByKeyboard($event)"
+                   required/>
+          </td>
         </tr>
         <tr>
           <td>Montant</td>
