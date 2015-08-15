@@ -339,7 +339,7 @@
     function saveSubCategory(category) {
       var deferred = $q.defer();
 
-      if (!subCategoryExistsOnServer()) {
+      if (vm.currentBankOperation.subCategory && !subCategoryExistsOnServer()) {
         var tmpSubCategory = {name: vm.currentBankOperation.subCategory, category: category};
 
         SubCategories.save(tmpSubCategory, function (subCategory) {
@@ -385,6 +385,7 @@
       vm.creditTab = operation.category.type === 'CREDIT';
 
       angular.copy(operation, vm.currentBankOperation);
+      vm.currentBankOperation.type = operation.category.type;
       vm.currentBankOperation.operationDate = moment.unix(operation.operationDate / 1000).format('DD/MM/YYYY');
       vm.operationSelected = true;
     }
