@@ -3,6 +3,13 @@
   cursor: pointer;
 }
 
+#numOperations {
+  font-weight: bold;
+  text-align: right;
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
 .editTab {
   border:1px solid #ddd;
   border-top:inherit;
@@ -20,10 +27,6 @@
 
 .editTab .actionBtns button, .editTab .newOperationBtn {
   width: 135px;
-}
-
-.clear {
-  clear: both;
 }
 
 .editPanelLeft {
@@ -45,10 +48,18 @@
   padding-bottom: 2px;
 }
 
-.editPanelLeft table td:first-child, .editPanelRight table td:first-child {
+.editPanelLeft table td.fieldLabel, .editPanelRight table td.fieldLabel {
   width: 1%;
   white-space: nowrap;
   padding-right: 15px;
+}
+
+.editPanelLeft table td.subCategoryLabel {
+  padding-left: 25px;
+}
+
+.editPanelLeft table td.notesLabel {
+  vertical-align: top;
 }
 
 .editPanelLeft table .notes {
@@ -56,23 +67,8 @@
   height: 50px;
 }
 
-.editPanelLeft table td.notesHeader {
-  vertical-align: top;
-}
-
 .input-sm {
   height: 25px;
-}
-
-#numOperations {
-  font-weight: bold;
-  text-align: right;
-  margin-top: 10px;
-  margin-bottom: 15px;
-}
-
-.form-control.thirdParty {
-  width: 100%;
 }
 
 .negative {

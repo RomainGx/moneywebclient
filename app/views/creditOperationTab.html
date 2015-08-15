@@ -7,18 +7,18 @@
     <div class="editPanelLeft">
       <table>
         <tr>
-          <td>De</td>
-          <td>
+          <td class="fieldLabel">De</td>
+          <td colspan="3">
             <input type="text"
                    ng-model="AccountDetailsCtrl.currentBankOperation.thirdParty"
                    typeahead="thirdParty as thirdParty.name for thirdParty in AccountDetailsCtrl.thirdParties | filter:$viewValue"
                    typeahead-min-length="0"
-                   class="form-control input-sm thirdParty"
+                   class="form-control input-sm"
                    required/>
           </td>
         </tr>
         <tr>
-          <td>Catégorie</td>
+          <td class="fieldLabel">Catégorie</td>
           <td>
             <input type="text"
                    ng-model="AccountDetailsCtrl.currentBankOperation.category"
@@ -28,9 +28,7 @@
                    required/>
             </select>
           </td>
-        </tr>
-        <tr>
-          <td>Sous-catégorie</td>
+          <td class="fieldLabel subCategoryLabel">Sous-catégorie</td>
           <td>
             <input type="text"
                    ng-disabled="!AccountDetailsCtrl.currentBankOperation.category"
@@ -41,10 +39,10 @@
           </td>
         </tr>
         <tr>
-          <td class="notesHeader">
+          <td class="fieldLabel notesLabel">
             Notes
           </td>
-          <td>
+          <td colspan="3">
             <textarea ng-model="AccountDetailsCtrl.currentBankOperation.notes" class="form-control notes"></textarea>
           </td>
         </tr>
