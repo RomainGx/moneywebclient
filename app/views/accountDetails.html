@@ -17,7 +17,7 @@
   <tr ng-repeat="operation in $data"
       class="bankOperation"
       ng-class="{ 'future': operation.operationDate > AccountDetailsCtrl.today }"
-      ng-click="AccountDetailsCtrl.editOperation(operation)">
+      ng-click="AccountDetailsCtrl.selectOperation(operation)">
     <td data-title="'ID'">{{operation.id}}</td>
     <td data-title="'Echéance'"></td>
     <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>
@@ -51,10 +51,10 @@
 
 <form novalidate>
   <tabset justified="true">
-    <tab heading="Débit" select="AccountDetailsCtrl.onChargeTab()">
+    <tab heading="Débit" ng-click="AccountDetailsCtrl.onChargeTab()" active="AccountDetailsCtrl.chargeTab">
       <ng-include src="'views/chargeOperationTab.html'"/>
     </tab>
-    <tab heading="Crédit" select="AccountDetailsCtrl.onCreditTab()">
+    <tab heading="Crédit" ng-click="AccountDetailsCtrl.onCreditTab()" active="AccountDetailsCtrl.creditTab">
       <ng-include src="'views/creditOperationTab.html'"/>
     </tab>
   </tabset>

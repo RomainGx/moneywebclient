@@ -11,14 +11,18 @@
   {
     var vm = this;
 
+    this.chargeTab = true;
+    this.creditTab = false;
+
     this.tableParams = null;
     this.categoryUnwatcher = null;
     this.filterUnwatcher = null;
     this.today = moment().unix() * 1000;
     this.totalNumOperations = 0;
 
-    this.currentBankOperation = {};
+    this.currentBankOperation = { type: 'CHARGE', category: '', subCategory: '' };
     this.isEditing = false;
+    this.operationSelected = false;
     this.account = Accounts.get({accountId: $routeParams.accountId});
     this.bankOperations = [];
     this.thirdParties = ThirdParties.query();
@@ -32,7 +36,8 @@
     this.save = save;
     this.saveBankOperation = saveBankOperation;
     this.saveThirdParty = saveThirdParty;
-    this.editOperation = editOperation;
+    this.selectOperation = selectOperation;
+    this.editCurrentOperation = editCurrentOperation;
     this.handleDateChangeByKeyboard = handleDateChangeByKeyboard;
     this.watchFilter = watchFilter;
     this.unwatchFilter = unwatchFilter;
@@ -164,10 +169,12 @@
 
       watchCategoryValue();
       vm.isEditing = true;
+      vm.operationSelected = false;
     }
 
     function cancelEditing() {
       vm.isEditing = false;
+      vm.operationSelected = false;
     }
 
     function onChargeTab() {
@@ -175,6 +182,9 @@
       delete vm.currentBankOperation.credit;
       vm.currentBankOperation.category = "";
       vm.currentBankOperation.subCategory = "";
+      vm.currentBankOperation.type = 'CHARGE';
+
+      vm.chargeTab = true;
     }
 
     function onCreditTab() {
@@ -182,6 +192,9 @@
       delete vm.currentBankOperation.charge;
       vm.currentBankOperation.category = "";
       vm.currentBankOperation.subCategory = "";
+      vm.currentBankOperation.type = 'CREDIT';
+
+      vm.creditTab = true;
     }
 
     /**
@@ -201,6 +214,7 @@
         .then(saveBankOperation)
         .then(function () {
           vm.isEditing = false;
+          vm.operationSelected = false;
         })
         .catch(function(handleReject) {
           alert('error ' + handleReject);
@@ -363,12 +377,20 @@
     }
 
     /**
-     *
-     * @param {BankOperation} operation Opération à modifier.
+     * Sélectionne une opération et l'affiche dans la zone d'édition.
+     * @param {BankOperation} operation Opération à afficher dans la zone d'édition.
      */
-    function editOperation(operation) {
-      vm.currentBankOperation = operation;
+    function selectOperation(operation) {
+      vm.chargeTab = operation.category.type === 'CHARGE';
+      vm.creditTab = operation.category.type === 'CREDIT';
+
+      angular.copy(operation, vm.currentBankOperation);
       vm.currentBankOperation.operationDate = moment.unix(operation.operationDate / 1000).format('DD/MM/YYYY');
+      vm.operationSelected = true;
+    }
+
+    function editCurrentOperation() {
+      vm.isEditing = true;
     }
 
     /**

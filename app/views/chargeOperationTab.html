@@ -4,6 +4,11 @@
           ng-click="AccountDetailsCtrl.addNewOperation('CHARGE')"
           ng-disabled="AccountDetailsCtrl.isEditing">Nouveau</button>
 
+  <button type="button"
+          class="btn btn-xs editOperationBtn"
+          ng-click="AccountDetailsCtrl.editCurrentOperation()"
+          ng-disabled="AccountDetailsCtrl.isEditing || !AccountDetailsCtrl.operationSelected">Modifier</button>
+
   <div>
     <div class="editPanelLeft">
       <table>
@@ -34,12 +39,11 @@
           <td class="fieldLabel subCategoryLabel">Sous-catégorie</td>
           <td>
             <input type="text"
-                   ng-disabled="!AccountDetailsCtrl.currentBankOperation.category"
+                   ng-disabled="!AccountDetailsCtrl.currentBankOperation.category || !AccountDetailsCtrl.isEditing"
                    ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
                    typeahead="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | filter:$viewValue "
                    typeahead-min-length="0"
-                   class="form-control input-sm"
-                   ng-disabled="!AccountDetailsCtrl.isEditing"/>
+                   class="form-control input-sm"/>
           </td>
         </tr>
         <tr>
