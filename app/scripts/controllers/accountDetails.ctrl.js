@@ -18,6 +18,7 @@
     this.totalNumOperations = 0;
 
     this.currentBankOperation = {};
+    this.isEditing = false;
     this.account = Accounts.get({accountId: $routeParams.accountId});
     this.bankOperations = [];
     this.thirdParties = ThirdParties.query();
@@ -25,6 +26,7 @@
     this.creditCategories = Categories.Credit.query();
 
     this.addNewOperation = addNewOperation;
+    this.cancelEditing = cancelEditing;
     this.onChargeTab = onChargeTab;
     this.onCreditTab = onCreditTab;
     this.save = save;
@@ -161,6 +163,11 @@
       }
 
       watchCategoryValue();
+      vm.isEditing = true;
+    }
+
+    function cancelEditing() {
+      vm.isEditing = false;
     }
 
     function onChargeTab() {
@@ -192,6 +199,9 @@
         .then(saveCategory)
         .then(saveSubCategory)
         .then(saveBankOperation)
+        .then(function () {
+          vm.isEditing = false;
+        })
         .catch(function(handleReject) {
           alert('error ' + handleReject);
         });

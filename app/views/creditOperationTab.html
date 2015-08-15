@@ -1,7 +1,8 @@
 <div class="editTab">
   <button type="button"
           class="btn btn-primary btn-xs newOperationBtn"
-          ng-click="AccountDetailsCtrl.addNewOperation('CREDIT')">Nouveau</button>
+          ng-click="AccountDetailsCtrl.addNewOperation('CREDIT')"
+          ng-disabled="AccountDetailsCtrl.isEditing">Nouveau</button>
 
   <div>
     <div class="editPanelLeft">
@@ -14,6 +15,7 @@
                    typeahead="thirdParty as thirdParty.name for thirdParty in AccountDetailsCtrl.thirdParties | filter:$viewValue"
                    typeahead-min-length="0"
                    class="form-control input-sm"
+                   ng-disabled="!AccountDetailsCtrl.isEditing"
                    required/>
           </td>
         </tr>
@@ -25,6 +27,7 @@
                    typeahead="category as category.name for category in AccountDetailsCtrl.creditCategories | filter:$viewValue "
                    typeahead-min-length="0"
                    class="form-control input-sm"
+                   ng-disabled="!AccountDetailsCtrl.isEditing"
                    required/>
             </select>
           </td>
@@ -35,7 +38,8 @@
                    ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
                    typeahead="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | filter:$viewValue "
                    typeahead-min-length="0"
-                   class="form-control input-sm"/>
+                   class="form-control input-sm"
+                   ng-disabled="!AccountDetailsCtrl.isEditing"/>
           </td>
         </tr>
         <tr>
@@ -43,7 +47,7 @@
             Notes
           </td>
           <td colspan="3">
-            <textarea ng-model="AccountDetailsCtrl.currentBankOperation.notes" class="form-control notes"></textarea>
+            <textarea ng-model="AccountDetailsCtrl.currentBankOperation.notes" class="form-control notes" ng-disabled="!AccountDetailsCtrl.isEditing"></textarea>
           </td>
         </tr>
       </table>
@@ -52,7 +56,12 @@
       <table>
         <tr>
           <td>Num chèque</td>
-          <td><input type="text" class="form-control input-sm" ng-model="AccountDetailsCtrl.currentBankOperation.bankNoteNum"/></td>
+          <td>
+            <input type="text"
+                   class="form-control input-sm"
+                   ng-model="AccountDetailsCtrl.currentBankOperation.bankNoteNum"
+                   ng-disabled="!AccountDetailsCtrl.isEditing"/>
+          </td>
         </tr>
         <tr>
           <td>Date</td>
@@ -61,12 +70,19 @@
                    class="form-control input-sm"
                    ng-model="AccountDetailsCtrl.currentBankOperation.operationDate"
                    ng-keypress="AccountDetailsCtrl.handleDateChangeByKeyboard($event)"
+                   ng-disabled="!AccountDetailsCtrl.isEditing"
                    required/>
           </td>
         </tr>
         <tr>
           <td>Montant</td>
-          <td><input type="number" class="form-control input-sm" ng-model="AccountDetailsCtrl.currentBankOperation.credit" required/></td>
+          <td>
+            <input type="number"
+                   class="form-control input-sm"
+                   ng-model="AccountDetailsCtrl.currentBankOperation.credit"
+                   ng-disabled="!AccountDetailsCtrl.isEditing"
+                   required/>
+          </td>
         </tr>
       </table>
     </div>
@@ -74,8 +90,14 @@
   </div>
 
   <div class="actionBtns">
-    <button type="submit" class="btn btn-primary btn-xs" ng-click="AccountDetailsCtrl.save()">Saisir</button>
-    <button type="reset" class="btn btn-xs">Annuler</button>
+    <button type="submit"
+            class="btn btn-primary btn-xs"
+            ng-click="AccountDetailsCtrl.save()"
+            ng-disabled="!AccountDetailsCtrl.isEditing">Saisir</button>
+    <button type="reset"
+            class="btn btn-xs"
+            ng-click="AccountDetailsCtrl.cancelEditing()"
+            ng-disabled="!AccountDetailsCtrl.isEditing">Annuler</button>
   </div>
   <br class="clear"/>
 </div>
