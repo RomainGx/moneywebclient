@@ -7,6 +7,10 @@
 
   BankOperations.$inject = ['$resource'];
   function BankOperations($resource) {
-    return $resource('http://localhost:9090/bankOperations/:accountId');
+    return $resource('http://localhost:9090/accounts/:accountId/bankOperations/:operationId', {}, {
+      update: {
+        method: 'PUT'
+      }
+    });
   }
 })();

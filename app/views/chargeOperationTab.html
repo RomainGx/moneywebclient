@@ -80,6 +80,7 @@
           <td>Montant</td>
           <td>
             <input type="number"
+                   min="0"
                    class="form-control input-sm"
                    ng-model="AccountDetailsCtrl.currentBankOperation.charge"
                    ng-disabled="!AccountDetailsCtrl.isEditing"

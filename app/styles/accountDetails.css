@@ -67,8 +67,12 @@
   height: 50px;
 }
 
-.input-sm {
+.editPanelLeft table .input-sm, .editPanelRight table .input-sm {
   height: 25px;
+  font-size: 11px;
+}
+
+.editPanelLeft table textarea {
   font-size: 11px;
 }
 

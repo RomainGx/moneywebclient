@@ -6,8 +6,8 @@
     .controller('AccountDetailsCtrl', AccountDetailsCtrl);
 
 
-  AccountDetailsCtrl.$inject = ['Accounts', 'BankOperations', 'Categories', 'SubCategories', 'ThirdParties', 'ngTableParams', '$routeParams', '$filter', '$q', '$scope'];
-  function AccountDetailsCtrl(Accounts, BankOperations, Categories, SubCategories, ThirdParties, ngTableParams, $routeParams, $filter, $q, $scope)
+  AccountDetailsCtrl.$inject = ['Accounts', 'BankOperations', 'Categories', 'SubCategories', 'ThirdParties', 'Utils', 'ngTableParams', '$routeParams', '$filter', '$q', '$scope'];
+  function AccountDetailsCtrl(Accounts, BankOperations, Categories, SubCategories, ThirdParties, Utils, ngTableParams, $routeParams, $filter, $q, $scope)
   {
     var vm = this;
 
@@ -123,7 +123,7 @@
      */
     function computeReadableDatesOnBankOperations() {
       for (var i=0 ; i < vm.bankOperations.length ; i++) {
-        vm.bankOperations[i].operationDateHuman = moment.unix(vm.bankOperations[i].operationDate / 1000).format('DD/MM/YYYY');
+        vm.bankOperations[i].operationDateHuman = Utils.getHumanDateFromUnixTimestamp(vm.bankOperations[i].operationDate);
       }
     }
 
@@ -159,13 +159,6 @@
         operationDate: moment().format('DD/MM/YYYY'),
         balanceState: "NOT_BALANCED"
       };
-
-      if (type === 'CHARGE') {
-        selectFirstAvailableChargeCategories();
-      }
-      else {
-        selectFirstAvailableCreditCategories();
-      }
 
       watchCategoryValue();
       vm.isEditing = true;
@@ -366,12 +359,30 @@
     function saveBankOperation(subCategory) {
       var deferred = $q.defer();
 
-      BankOperations.save({accountId: vm.account.id}, vm.currentBankOperation, function (bankOperation) {
-        vm.bankOperations.push(bankOperation);
-        deferred.resolve(bankOperation);
-      }, function () {
-        deferred.reject('Failed saving bank operation');
-      });
+      if (vm.currentBankOperation.id) {
+        BankOperations.update({accountId: vm.account.id, operationId: vm.currentBankOperation.id}, vm.currentBankOperation, function (bankOperation) {
+          var oldBankOperationIdx = Utils.getPositionInArray(vm.bankOperations, bankOperation.id);
+          if (oldBankOperationIdx > -1) {
+            bankOperation.operationDateHuman = Utils.getHumanDateFromUnixTimestamp(bankOperation.operationDate);
+            vm.bankOperations[oldBankOperationIdx] = bankOperation;
+            vm.account = bankOperation.account;
+
+            computeBalanceOnBankOperations();
+          }
+
+          deferred.resolve(bankOperation);
+        }, function () {
+          deferred.reject('Failed updating bank operation');
+        });
+      }
+      else {
+        BankOperations.save({accountId: vm.account.id}, vm.currentBankOperation, function (bankOperation) {
+          vm.bankOperations.push(bankOperation);
+          deferred.resolve(bankOperation);
+        }, function () {
+          deferred.reject('Failed saving bank operation');
+        });
+      }
 
       return deferred.promise;
     }
@@ -386,7 +397,7 @@
 
       angular.copy(operation, vm.currentBankOperation);
       vm.currentBankOperation.type = operation.category.type;
-      vm.currentBankOperation.operationDate = moment.unix(operation.operationDate / 1000).format('DD/MM/YYYY');
+      vm.currentBankOperation.operationDate = Utils.getHumanDateFromUnixTimestamp(operation.operationDate);
       vm.operationSelected = true;
     }
 
@@ -440,39 +451,6 @@
      */
     function thirdPartyExistsOnServer() {
       return !!vm.currentBankOperation.thirdParty.name;
-    }
-
-    function selectFirstAvailableChargeCategories() {
-      if (vm.chargeCategories && vm.chargeCategories.length > 0) {
-        vm.currentBankOperation.category = vm.chargeCategories[0];
-
-        if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
-          vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
-        }
-        else {
-          vm.currentBankOperation.subCategory = "";
-        }
-      }
-      else {
-        vm.currentBankOperation.category = "";
-        vm.currentBankOperation.subCategory = "";
-      }
-    }
-
-    function selectFirstAvailableCreditCategories() {
-      if (vm.creditCategories && vm.creditCategories.length > 0) {
-        vm.currentBankOperation.category = vm.creditCategories[0];
-        if (vm.currentBankOperation.category.subCategories && vm.currentBankOperation.category.subCategories.length > 0) {
-          vm.currentBankOperation.subCategory = vm.currentBankOperation.category.subCategories[0];
-        }
-        else {
-          vm.currentBankOperation.subCategory = "";
-        }
-      }
-      else {
-        vm.currentBankOperation.category = "";
-        vm.currentBankOperation.subCategory = "";
-      }
     }
 
     /**
