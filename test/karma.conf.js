@@ -35,6 +35,7 @@ module.exports = function(config) {
       'bower_components/moment/moment.js',
       'bower_components/ng-table/dist/ng-table.min.js',
       'bower_components/angular-css/angular-css.js',
+      'bower_components/StickyTableHeaders/js/jquery.stickytableheaders.js',
       'bower_components/angular-mocks/angular-mocks.js',
       // endbower
       "app/scripts/**/*.js",
