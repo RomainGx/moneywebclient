@@ -56,6 +56,7 @@ angular
  * @property {string} bankName Nom de la banque.
  * @property {string} number Numéro de compte.
  * @property {number} startingBalance Solde initial.
+ * @property {number} (en local uniquement) currentBalance Solde actuel.
  * @property {number} finalBalance Solde final.
  */
 
@@ -85,7 +86,7 @@ angular
  * @property {Account} account Compte sur lequel a été effectuée l'opération.
  * @property {string} bankNoteNum Numéro de chèque.
  * @property {number} operationDate Date (au format UNIX en ms) à laquelle est passée l'opération.
- * @property {string} operationDateHuman Date dans un format lisible par un humain.
+ * @property {string} (en local uniquement) operationDateHuman Date dans un format lisible par un humain.
  * @property {string} balanceState Etat de l'opération parmis "NOT_BALANCED", "PENDING", "BALANCED".
  * @property {ThirdParty} thirdParty Tiers à l'origine ou à destination de l'opération.
  * @property [number} charge Montant du débit.
@@ -93,4 +94,5 @@ angular
  * @property {Category} category Catégorie associée à l'opération.
  * @property {SubCategory} subCategory Sous-catégorie associée à l'opération.
  * @property {string} notes Note libre associée à l'opération.
+ * @property {string} type (en local uniquement) Type d'opération ("CHARGE" ou "CREDIT")
  */

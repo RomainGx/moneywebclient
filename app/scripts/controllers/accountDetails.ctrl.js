@@ -11,36 +11,84 @@
   {
     var vm = this;
 
-    this.chargeTab = true;
-    this.creditTab = false;
+    /**
+     * @type {boolean}
+     * true si l'onglet actif est l'onglet "Charge"
+     */
+    vm.chargeTab = true;
+    /**
+     * @type {boolean}
+     * true si l'onglet actif est l'onglet "Crédit"
+     */
+    vm.creditTab = false;
 
-    this.tableParams = null;
+    vm.tableParams = null;
+    /** Fonction permettant d'annuler le watch sur la catégorie de {@link currentBankOperation}. */
     this.categoryUnwatcher = null;
+    /** Fonction permettant d'annuler le watch sur le filtre de recherche des opérations. */
     this.filterUnwatcher = null;
-    this.today = moment().unix() * 1000;
-    this.totalNumOperations = 0;
+    /**
+     * @type {number}
+     * Timestamp courant en ms
+     */
+    vm.today = moment().unix() * 1000;
+    /**
+     * @type {number}
+     * Nombre total d'opérations bancaires contenues dans {@link bankOperations}, avant filtrage.
+     */
+    vm.totalNumOperations = 0;
 
-    this.currentBankOperation = { type: 'CHARGE', category: '', subCategory: '' };
-    this.isEditing = false;
-    this.operationSelected = false;
-    this.account = Accounts.get({accountId: $routeParams.accountId});
-    this.bankOperations = [];
-    this.thirdParties = ThirdParties.query();
-    this.chargeCategories = Categories.Charge.query();
-    this.creditCategories = Categories.Credit.query();
+    /**
+     * @type {BankOperation}
+     * Opération à visualiser ou à éditer.
+     */
+    vm.currentBankOperation = { type: 'CHARGE', category: '' };
+    /**
+     * @type {boolean}
+     * true si l'utilisateur a accès au formulaire pour créer un nouvelle opération ou en modifier une existante.
+     */
+    vm.isEditing = false;
+    /**
+     * @type {boolean}
+     * true si une opération bancaire a été sélectionnée par l'utilisateur, et est affichée dans le formulaire.
+     */
+    vm.operationSelected = false;
+    /**
+     * @type {Account}
+     * Compte auquel sont rattachées toutes les opérations bancaires.
+     */
+    vm.account = Accounts.get({accountId: $routeParams.accountId});
+    /**
+     * @type {Array}
+     * Liste des opérations bancaires liées au compte {@link account}
+     */
+    vm.bankOperations = [];
+    /**
+     * @type {Array}
+     * Liste des tiers.
+     */
+    vm.thirdParties = ThirdParties.query();
+    /**
+     * @type {Array}
+     * Liste des catégories de débit.
+     */
+    vm.chargeCategories = Categories.Charge.query();
+    /**
+     * @type {Array}
+     * Liste des catégories de crédit.
+     */
+    vm.creditCategories = Categories.Credit.query();
 
-    this.addNewOperation = addNewOperation;
-    this.cancelEditing = cancelEditing;
-    this.onChargeTab = onChargeTab;
-    this.onCreditTab = onCreditTab;
-    this.save = save;
-    this.saveBankOperation = saveBankOperation;
-    this.saveThirdParty = saveThirdParty;
-    this.selectOperation = selectOperation;
-    this.editCurrentOperation = editCurrentOperation;
-    this.handleDateChangeByKeyboard = handleDateChangeByKeyboard;
-    this.watchFilter = watchFilter;
-    this.unwatchFilter = unwatchFilter;
+    vm.addNewOperation = addNewOperation;
+    vm.cancelEditing = cancelEditing;
+    vm.onChargeTab = onChargeTab;
+    vm.onCreditTab = onCreditTab;
+    vm.selectOperation = selectOperation;
+    vm.editCurrentOperation = editCurrentOperation;
+    vm.handleDateChangeByKeyboard = handleDateChangeByKeyboard;
+    vm.save = save;
+    vm.watchFilter = watchFilter;
+    vm.unwatchFilter = unwatchFilter;
 
 
     configTableParams();
@@ -80,12 +128,13 @@
       });
     }
 
+    //noinspection JSUnusedLocalSymbols
     /**
      * Filtre une opération bancaire en fonction de la saisie de l'utilisateur dans le champ Recherche.
      * @param {BankOperation} bankOperation Opération pour laquelle déterminer si elle passe le filtre.
      * @param {number} index Index de l'opération dans le tableau.
      * @param {BankOperation[]} bankOperations Liste des opérations bancaires.
-     * @returns {string|boolean|*|ThirdParty}
+     * @returns {boolean} true si bankOperation passe le filtre, false sinon.
      */
     function searchFilter(bankOperation, index, bankOperations) {
       return ((bankOperation.bankNoteNum && bankOperation.bankNoteNum.toLowerCase().indexOf(vm.search) > -1) ||
@@ -171,21 +220,43 @@
     }
 
     function onChargeTab() {
-      vm.currentBankOperation.charge = vm.currentBankOperation.credit;
-      delete vm.currentBankOperation.credit;
-      vm.currentBankOperation.category = "";
-      vm.currentBankOperation.subCategory = "";
-      vm.currentBankOperation.type = 'CHARGE';
+      var oldCredit, oldThirdParty, oldNotes, copyOldFields = false;
+
+      if (!vm.operationSelected) {
+        oldCredit = vm.currentBankOperation.credit;
+        oldThirdParty = vm.currentBankOperation.thirdParty;
+        oldNotes = vm.currentBankOperation.notes;
+        copyOldFields = true;
+      }
+
+      addNewOperation('CHARGE');
+
+      if (copyOldFields === true) {
+        vm.currentBankOperation.charge = oldCredit;
+        vm.currentBankOperation.thirdParty = oldThirdParty;
+        vm.currentBankOperation.notes = oldNotes;
+      }
 
       vm.chargeTab = true;
     }
 
     function onCreditTab() {
-      vm.currentBankOperation.credit = vm.currentBankOperation.charge;
-      delete vm.currentBankOperation.charge;
-      vm.currentBankOperation.category = "";
-      vm.currentBankOperation.subCategory = "";
-      vm.currentBankOperation.type = 'CREDIT';
+      var oldCharge, oldThirdParty, oldNotes, copyOldFields = false;
+
+      if (!vm.operationSelected) {
+        oldCharge = vm.currentBankOperation.charge;
+        oldThirdParty = vm.currentBankOperation.thirdParty;
+        oldNotes = vm.currentBankOperation.notes;
+        copyOldFields = true;
+      }
+
+      addNewOperation('CREDIT');
+
+      if (copyOldFields === true) {
+        vm.currentBankOperation.charge = oldCharge;
+        vm.currentBankOperation.thirdParty = oldThirdParty;
+        vm.currentBankOperation.notes = oldNotes;
+      }
 
       vm.creditTab = true;
     }
@@ -290,6 +361,7 @@
       return deferred.promise;
     }
 
+    //noinspection JSUnusedLocalSymbols
     /**
      * Sauvegarde la catégorie sélectionnée pour la nouvelle opération sur le serveur.
      * Si la catégorie existe déjà sur le serveur, alors elle est simplement renvoyée.
@@ -351,6 +423,7 @@
       return deferred.promise;
     }
 
+    //noinspection JSUnusedLocalSymbols
     /**
      * Sauvegarde la nouvelle opération bancaire sur le serveur.
      * @param {SubCategory} subCategory La sous-catégorie sauvegardée précédemment.
@@ -367,7 +440,7 @@
             vm.bankOperations[oldBankOperationIdx] = bankOperation;
             vm.account = bankOperation.account;
 
-            computeBalanceOnBankOperations();
+            vm.tableParams.reload();
           }
 
           deferred.resolve(bankOperation);
@@ -378,6 +451,8 @@
       else {
         BankOperations.save({accountId: vm.account.id}, vm.currentBankOperation, function (bankOperation) {
           vm.bankOperations.push(bankOperation);
+          vm.tableParams.reload();
+
           deferred.resolve(bankOperation);
         }, function () {
           deferred.reject('Failed saving bank operation');
@@ -457,9 +532,10 @@
      * Scrute la valeur de la catégorie afin de reseter la sous-catégorie si on supprime la catégorie.
      */
     function watchCategoryValue() {
+      //noinspection JSUnusedLocalSymbols
       vm.categoryUnwatcher = $scope.$watch('AccountDetailsCtrl.currentBankOperation.category', function(current, original) {
         if (!current) {
-          vm.currentBankOperation.subCategory = "";
+          delete vm.currentBankOperation.subCategory;
         }
       });
     }
