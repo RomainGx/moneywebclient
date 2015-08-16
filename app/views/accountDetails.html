@@ -13,26 +13,48 @@
 
 <p id="numOperations">{{AccountDetailsCtrl.bankOperations.length}} / {{AccountDetailsCtrl.totalNumOperations}} opérations</p>
 
-<table ng-table="AccountDetailsCtrl.tableParams" show-filter="false" class="table table-condensed">
-  <tr ng-repeat="operation in $data"
-      class="bankOperation"
-      ng-class="{ 'future': operation.operationDate > AccountDetailsCtrl.today }"
-      ng-click="AccountDetailsCtrl.selectOperation(operation)">
-    <td data-title="'ID'">{{operation.id}}</td>
-    <td data-title="'Echéance'"></td>
-    <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>
-    <td data-title="'Date'" sortable="'operationDate'">{{operation.operationDateHuman}}</td>
-    <td data-title="''">
-      <span ng-if="operation.balanceState == 'PENDING'">P</span>
-      <span ng-if="operation.balanceState == 'BALANCED'">R</span>
-    </td>
-    <td data-title="'Payé à'" sortable="'thirdParty.name'">{{operation.thirdParty.name}}</td>
-    <td data-title="'Débit'" sortable="'charge'" class="amount">{{operation.charge | currency}}</td>
-    <td data-title="'Crédit'" sortable="'credit'" class="amount">{{operation.credit | currency}}</td>
-    <td data-title="'Solde'" ng-class="{negative: operation.balance < 0}" class="amount">{{operation.balance | currency}}</td>
-  </tr>
+<div id="operationsList">
+  <table ng-table="AccountDetailsCtrl.tableParams" show-filter="false" class="table table-condensed">
+    <tr ng-repeat="operation in $data"
+        class="bankOperation"
+        ng-class="{ 'future': operation.operationDate > AccountDetailsCtrl.today }"
+        ng-click="AccountDetailsCtrl.selectOperation(operation)">
+      <td data-title="'ID'">{{operation.id}}</td>
+      <td data-title="'Echéance'"></td>
+      <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>
+      <td data-title="'Date'" sortable="'operationDate'">{{operation.operationDateHuman}}</td>
+      <td data-title="''">
+        <span ng-if="operation.balanceState == 'PENDING'">P</span>
+        <span ng-if="operation.balanceState == 'BALANCED'">R</span>
+      </td>
+      <td data-title="'Payé à'" sortable="'thirdParty.name'">{{operation.thirdParty.name}}</td>
+      <td data-title="'Débit'" sortable="'charge'" class="amount">{{operation.charge | currency}}</td>
+      <td data-title="'Crédit'" sortable="'credit'" class="amount">{{operation.credit | currency}}</td>
+      <td data-title="'Solde'" ng-class="{negative: operation.balance < 0}" class="amount">{{operation.balance | currency}}</td>
+    </tr>
+    <tr ng-repeat="operation in $data"
+        class="bankOperation"
+        ng-class="{ 'future': operation.operationDate > AccountDetailsCtrl.today }"
+        ng-click="AccountDetailsCtrl.selectOperation(operation)">
+      <td data-title="'ID'">{{operation.id}}</td>
+      <td data-title="'Echéance'"></td>
+      <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>
+      <td data-title="'Date'" sortable="'operationDate'">{{operation.operationDateHuman}}</td>
+      <td data-title="''">
+        <span ng-if="operation.balanceState == 'PENDING'">P</span>
+        <span ng-if="operation.balanceState == 'BALANCED'">R</span>
+      </td>
+      <td data-title="'Payé à'" sortable="'thirdParty.name'">{{operation.thirdParty.name}}</td>
+      <td data-title="'Débit'" sortable="'charge'" class="amount">{{operation.charge | currency}}</td>
+      <td data-title="'Crédit'" sortable="'credit'" class="amount">{{operation.credit | currency}}</td>
+      <td data-title="'Solde'" ng-class="{negative: operation.balance < 0}" class="amount">{{operation.balance | currency}}</td>
+    </tr>
+  </table>
+</div>
+
+<table class="table table-condensed balanceTable">
   <tr>
-    <td colspan="8" class="currentBalanceHeader">
+    <td class="currentBalanceHeader">
       Solde du jour
     </td>
     <td class="currentBalance amount">
@@ -40,7 +62,7 @@
     </td>
   </tr>
   <tr>
-    <td colspan="8" class="finalBalanceHeader">
+    <td class="finalBalanceHeader">
       Solde final
     </td>
     <td class="finalBalance amount">

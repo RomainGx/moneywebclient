@@ -9,6 +9,7 @@
     <file url="file://$PROJECT_DIR$/app/scripts/services/categories.factory.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/services/subCategories.factory.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/accountDetails.css" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/styles/main.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/views/accounts.html" charset="UTF-8" />
   </component>
 </project>

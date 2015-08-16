@@ -1,3 +1,21 @@
+#operationsList {
+  font-size: 11px;
+  max-height: 590px;
+  overflow-y: auto;
+}
+
+#operationsList .ng-table-pager {
+  display: none;
+}
+
+#operationsList > table {
+  margin-bottom: 0;
+}
+
+#operationsList > table > tbody > tr > td {
+  padding: 0;
+}
+
 .bankOperation:hover {
   background-color: #e3f2fd;
   cursor: pointer;
@@ -96,5 +114,9 @@
 td.currentBalanceHeader, td.finalBalanceHeader {
   text-transform: uppercase;
   text-align: right;
+}
+.balanceTable > tbody > tr > td.currentBalance, .balanceTable > tbody > tr > td.finalBalance {
+  width: 1%;
+  padding-left: 20px;
 }
 
