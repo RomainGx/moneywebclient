@@ -21,7 +21,7 @@
         class="bankOperation"
         ng-class="{ 'future': operation.operationDate > AccountDetailsCtrl.today }"
         ng-click="AccountDetailsCtrl.selectOperation(operation)">
-      <td data-title="'ID'">{{operation.id}}</td>
+      <td data-title="'ID'" sortable="'id'">{{operation.id}}</td>
       <td data-title="'Echéance'"></td>
       <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>
       <td data-title="'Date'" sortable="'operationDate'">{{operation.operationDateHuman}}</td>
@@ -29,7 +29,7 @@
         <span ng-if="operation.balanceState == 'PENDING'">P</span>
         <span ng-if="operation.balanceState == 'BALANCED'">R</span>
       </td>
-      <td data-title="'Payé à'" sortable="'thirdParty.name'">{{operation.thirdParty.name}}</td>
+      <td data-title="'Tiers'" sortable="'thirdParty.name'">{{operation.thirdParty.name}}</td>
       <td data-title="'Débit'" sortable="'charge'" class="amount">{{operation.charge | currency}}</td>
       <td data-title="'Crédit'" sortable="'credit'" class="amount">{{operation.credit | currency}}</td>
       <td data-title="'Solde'" ng-class="{negative: operation.balance < 0}" class="amount">{{operation.balance | currency}}</td>

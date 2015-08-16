@@ -13,6 +13,15 @@
 
     /**
      * @type {boolean}
+     * true si la page vient de se charger.
+     */
+    this.pageLoad = true;
+    /** Fonction permettant d'annuler le watch sur la catégorie de {@link currentBankOperation}. */
+    this.categoryUnwatcher = null;
+    /** Fonction permettant d'annuler le watch sur le filtre de recherche des opérations. */
+    this.filterUnwatcher = null;
+    /**
+     * @type {boolean}
      * true si l'onglet actif est l'onglet "Charge"
      */
     vm.chargeTab = true;
@@ -21,12 +30,8 @@
      * true si l'onglet actif est l'onglet "Crédit"
      */
     vm.creditTab = false;
-
+    /** Paramètres utilisés par ng-table pour la liste des opérations. */
     vm.tableParams = null;
-    /** Fonction permettant d'annuler le watch sur la catégorie de {@link currentBankOperation}. */
-    this.categoryUnwatcher = null;
-    /** Fonction permettant d'annuler le watch sur le filtre de recherche des opérations. */
-    this.filterUnwatcher = null;
     /**
      * @type {number}
      * Timestamp courant en ms
@@ -119,6 +124,11 @@
             if (vm.search) {
               vm.search = vm.search.toLowerCase();
               vm.bankOperations = $filter('filter')(vm.bankOperations, searchFilter);
+            }
+
+            if (vm.pageLoad) {
+              $("#operationsList").animate({scrollTop: $(document).height()});
+              vm.pageLoad = false;
             }
 
             $defer.resolve(vm.bankOperations);
