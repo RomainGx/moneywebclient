@@ -20,7 +20,8 @@
     <tr ng-repeat="operation in $data"
         class="bankOperation"
         ng-class="{ 'future': operation.operationDate > AccountDetailsCtrl.today }"
-        ng-click="AccountDetailsCtrl.selectOperation(operation)">
+        ng-click="AccountDetailsCtrl.selectOperation(operation)"
+        on-finish-render="ngRepeatFinished">
       <td data-title="'ID'" sortable="'id'">{{operation.id}}</td>
       <td data-title="'Echéance'"></td>
       <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>

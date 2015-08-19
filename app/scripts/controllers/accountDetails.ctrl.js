@@ -11,11 +11,6 @@
   {
     var vm = this;
 
-    /**
-     * @type {boolean}
-     * true si la page vient de se charger.
-     */
-    this.pageLoad = true;
     /** Fonction permettant d'annuler le watch sur la catégorie de {@link currentBankOperation}. */
     this.categoryUnwatcher = null;
     /** Fonction permettant d'annuler le watch sur le filtre de recherche des opérations. */
@@ -97,7 +92,7 @@
 
 
     configTableParams();
-
+    scrollToEndOfTableWhenRendered();
 
     /**
      * Configure ng-table pour l'affichage des opérations bancaires.
@@ -124,11 +119,6 @@
             if (vm.search) {
               vm.search = vm.search.toLowerCase();
               vm.bankOperations = $filter('filter')(vm.bankOperations, searchFilter);
-            }
-
-            if (vm.pageLoad) {
-              $("#operationsList").animate({scrollTop: $(document).height()});
-              vm.pageLoad = false;
             }
 
             $defer.resolve(vm.bankOperations);
@@ -577,6 +567,13 @@
         vm.filterUnwatcher();
         vm.filterUnwatcher = null;
       }
+    }
+
+    function scrollToEndOfTableWhenRendered() {
+      $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
+        var operationsList = $('#operationsList');
+        operationsList.animate({scrollTop: operationsList.get(0).scrollHeight});
+      });
     }
   }
 })();
