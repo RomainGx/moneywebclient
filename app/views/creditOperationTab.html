@@ -17,8 +17,10 @@
           <td colspan="3">
             <input type="text"
                    ng-model="AccountDetailsCtrl.currentBankOperation.thirdParty"
-                   typeahead="thirdParty as thirdParty.name for thirdParty in AccountDetailsCtrl.thirdParties | filter:$viewValue"
+                   typeahead="thirdParty as thirdParty.name for thirdParty in AccountDetailsCtrl.thirdParties | filter:$viewValue:AccountDetailsCtrl.typeaheadStateComparator "
                    typeahead-min-length="0"
+                   ng-focus="AccountDetailsCtrl.onTypeaheadFocus($event)"
+                   empty-typeahead
                    class="form-control input-sm"
                    ng-disabled="!AccountDetailsCtrl.isEditing"
                    required/>
@@ -29,8 +31,10 @@
           <td>
             <input type="text"
                    ng-model="AccountDetailsCtrl.currentBankOperation.category"
-                   typeahead="category as category.name for category in AccountDetailsCtrl.creditCategories | filter:$viewValue "
+                   typeahead="category as category.name for category in AccountDetailsCtrl.creditCategories | filter:$viewValue:AccountDetailsCtrl.typeaheadStateComparator "
                    typeahead-min-length="0"
+                   ng-focus="AccountDetailsCtrl.onTypeaheadFocus($event)"
+                   empty-typeahead
                    class="form-control input-sm"
                    ng-disabled="!AccountDetailsCtrl.isEditing"
                    required/>
@@ -41,8 +45,10 @@
             <input type="text"
                    ng-disabled="!AccountDetailsCtrl.currentBankOperation.category || !AccountDetailsCtrl.isEditing"
                    ng-model="AccountDetailsCtrl.currentBankOperation.subCategory"
-                   typeahead="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | filter:$viewValue "
+                   typeahead="subCategory as subCategory.name for subCategory in AccountDetailsCtrl.currentBankOperation.category.subCategories | filter:$viewValue:AccountDetailsCtrl.typeaheadStateComparator "
                    typeahead-min-length="0"
+                   ng-focus="AccountDetailsCtrl.onTypeaheadFocus($event)"
+                   empty-typeahead
                    class="form-control input-sm"/>
           </td>
         </tr>

@@ -6,8 +6,8 @@
     .controller('AccountDetailsCtrl', AccountDetailsCtrl);
 
 
-  AccountDetailsCtrl.$inject = ['Accounts', 'BankOperations', 'Categories', 'SubCategories', 'ThirdParties', 'Utils', 'ngTableParams', '$routeParams', '$filter', '$q', '$scope'];
-  function AccountDetailsCtrl(Accounts, BankOperations, Categories, SubCategories, ThirdParties, Utils, ngTableParams, $routeParams, $filter, $q, $scope)
+  AccountDetailsCtrl.$inject = ['Accounts', 'BankOperations', 'Categories', 'SubCategories', 'ThirdParties', 'Utils', 'ngTableParams', '$routeParams', '$filter', '$q', '$scope', '$timeout'];
+  function AccountDetailsCtrl(Accounts, BankOperations, Categories, SubCategories, ThirdParties, Utils, ngTableParams, $routeParams, $filter, $q, $scope, $timeout)
   {
     var vm = this;
 
@@ -89,10 +89,13 @@
     vm.save = save;
     vm.watchFilter = watchFilter;
     vm.unwatchFilter = unwatchFilter;
+    vm.onTypeaheadFocus = onTypeaheadFocus;
+    vm.typeaheadStateComparator = typeaheadStateComparator;
 
 
     configTableParams();
     scrollToEndOfTableWhenRendered();
+
 
     /**
      * Configure ng-table pour l'affichage des opérations bancaires.
@@ -574,6 +577,17 @@
         var operationsList = $('#operationsList');
         operationsList.animate({scrollTop: operationsList.get(0).scrollHeight});
       });
+    }
+
+    function onTypeaheadFocus(event) {
+      $timeout(function () {
+        $(event.target).trigger('input');
+        $(event.target).trigger('change'); // for IE
+      });
+    }
+
+    function typeaheadStateComparator(state, viewValue) {
+      return viewValue === '[$empty$]' || (''+state).toLowerCase().indexOf((''+viewValue).toLowerCase()) > -1;
     }
   }
 })();
