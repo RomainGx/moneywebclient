@@ -8,6 +8,7 @@
        id="searchFilter"
        class="input-filter form-control"
        ng-model="AccountDetailsCtrl.search"
+       ng-model-options="{debounce: 500}"
        ng-focus="AccountDetailsCtrl.watchFilter()"
        ng-blur="AccountDetailsCtrl.unwatchFilter()"
        placeholder="Rechercher un tiers, une date, un numéro de chèque"/>

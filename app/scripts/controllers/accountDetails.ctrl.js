@@ -62,7 +62,9 @@
      * @type {Array}
      * Liste des opérations bancaires liées au compte {@link account}
      */
-    vm.bankOperations = [];
+    vm.bankOperations = BankOperations.query({accountId: $routeParams.accountId}, function() {
+      configTableParams();
+    });
     /**
      * @type {Array}
      * Liste des tiers.
@@ -93,7 +95,6 @@
     vm.typeaheadStateComparator = typeaheadStateComparator;
 
 
-    configTableParams();
     scrollToEndOfTableWhenRendered();
 
 
@@ -110,23 +111,22 @@
         counts: [],
         defaultSort: 'asc',
         getData: function($defer, params) {
-          vm.bankOperations = BankOperations.query({accountId: $routeParams.accountId}, function() {
-            computeReadableDatesOnBankOperations();
-            computeBalanceOnBankOperations();
+          computeReadableDatesOnBankOperations();
+          computeBalanceOnBankOperations();
 
-            vm.totalNumOperations = vm.bankOperations.length;
+          vm.totalNumOperations = vm.bankOperations.length;
 
-            var orderBy = getOrderBy(params);
-            vm.bankOperations = params.sorting() ? $filter('orderBy')(vm.bankOperations, orderBy) : vm.bankOperations;
+          var orderBy = getOrderBy(params);
+          var filteredOperations = [];
+          filteredOperations = params.sorting() ? $filter('orderBy')(vm.bankOperations, orderBy) : vm.bankOperations;
 
-            if (vm.search) {
-              vm.search = vm.search.toLowerCase();
-              vm.bankOperations = $filter('filter')(vm.bankOperations, searchFilter);
-            }
+          if (vm.search) {
+            vm.search = vm.search.toLowerCase();
+            filteredOperations = $filter('filter')(filteredOperations, searchFilter);
+          }
 
-            $defer.resolve(vm.bankOperations);
-            //$defer.resolve(vm.bankOperations.slice((params.page() - 1) * params.count(), params.page() * params.count()));
-          });
+          $defer.resolve(filteredOperations);
+          //$defer.resolve(vm.bankOperations.slice((params.page() - 1) * params.count(), params.page() * params.count()));
         }
       });
     }
