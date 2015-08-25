@@ -23,11 +23,8 @@
 <label for="duration">Période de référence</label>
 <select id="duration"
         ng-model="CategoryInfosCtrl.duration"
-        ng-change="CategoryInfosCtrl.updateChart()">
-  <option value="3">3</option>
-  <option value="6">6</option>
-  <option value="9">9</option>
-  <option value="12">12</option>
+        ng-change="CategoryInfosCtrl.updateChart()"
+        ng-options="n for n in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]">
 </select>
 <select id="period"
         ng-model="CategoryInfosCtrl.period"

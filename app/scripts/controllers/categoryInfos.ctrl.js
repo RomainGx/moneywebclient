@@ -97,6 +97,7 @@
       var referenceMoment = computeStartingReferenceMoment(),
         chartData = [],
         dataOfPeriod = [],
+        periodChanges = 0,
         operationIdx, columnIdx, subCategoriesColumnMap,
         startOfPeriod, endOfPeriod;
 
@@ -111,6 +112,11 @@
         // Si l'opération fait partie de la période actuellement scannée, on vérifie s'il faut créer un nouveau dataOfPeriod
         if (vm.bankOperations[operationIdx].operationDate >= startOfPeriod && vm.bankOperations[operationIdx].operationDate <= endOfPeriod) {
           if (dataOfPeriod.length == 0) {
+            periodChanges++;
+            if (periodChanges > vm.duration) {
+              break;
+            }
+
             dataOfPeriod = initNewDataOfPeriod(chartData, referenceMoment, subCategoriesColumnMap);
           }
         }
@@ -119,6 +125,11 @@
           referenceMoment = moment.unix(startOfPeriod / 1000).subtract(1, vm.period);
           startOfPeriod = referenceMoment.unix() * 1000;
           endOfPeriod = referenceMoment.endOf(vm.period).unix() * 1000;
+
+          periodChanges++;
+          if (periodChanges > vm.duration) {
+            break;
+          }
 
           dataOfPeriod = initNewDataOfPeriod(chartData, referenceMoment, subCategoriesColumnMap);
         }
