@@ -95,7 +95,7 @@
     vm.typeaheadStateComparator = typeaheadStateComparator;
 
 
-    scrollToEndOfTableWhenRendered();
+    Utils.scrollToEndOfTableWhenRendered($scope, $('#operationsList'));
 
 
     /**
@@ -116,7 +116,7 @@
 
           vm.totalNumOperations = vm.bankOperations.length;
 
-          var orderBy = getOrderBy(params);
+          var orderBy = Utils.computeOrderBy(params);
           var filteredOperations = params.sorting() ? $filter('orderBy')(vm.bankOperations, orderBy) : vm.bankOperations;
 
           if (vm.search) {
@@ -142,30 +142,6 @@
       return ((bankOperation.bankNoteNum && bankOperation.bankNoteNum.toLowerCase().indexOf(vm.search) > -1) ||
         (bankOperation.operationDateHuman && bankOperation.operationDateHuman.toLowerCase().indexOf(vm.search) > -1) ||
         (bankOperation.thirdParty && bankOperation.thirdParty.name && bankOperation.thirdParty.name.toLowerCase().indexOf(vm.search) > -1));
-    }
-
-    /**
-     * Paramètre la clause order by en fonction du choix de l'utilisateur.
-     * Si les opérations sont triées sur un autre élément que la date, alors on ajoute 2 critères de tri secondaires :
-     * la date et l'ID.
-     * @param {object} params Paramètres fournis par ng-table, qui contiennent la clause orderBy.
-     * @returns {*[]} Clause orderBy à utiliser.
-     */
-    function getOrderBy(params) {
-      var orderBy = [params.orderBy()[0]];
-
-      if (orderBy[0] === '-operationDate') {
-        orderBy.push('-id');
-      }
-      else if (orderBy[0] === '+operationDate') {
-        orderBy.push('+id');
-      }
-      else {
-        orderBy.push('+operationDate');
-        orderBy.push('+id');
-      }
-
-      return orderBy;
     }
 
     /**
@@ -610,13 +586,6 @@
         vm.filterUnwatcher();
         vm.filterUnwatcher = null;
       }
-    }
-
-    function scrollToEndOfTableWhenRendered() {
-      $scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
-        var operationsList = $('#operationsList');
-        operationsList.animate({scrollTop: operationsList.get(0).scrollHeight});
-      });
     }
 
     function onTypeaheadFocus(event) {
