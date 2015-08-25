@@ -6,8 +6,8 @@
     .controller('CategoriesCtrl', CategoriesCtrl);
 
 
-  CategoriesCtrl.$inject = ['Categories', 'SubCategories'];
-  function CategoriesCtrl(Categories, SubCategories)
+  CategoriesCtrl.$inject = ['Categories', 'SubCategories', '$location'];
+  function CategoriesCtrl(Categories, SubCategories, $location)
   {
     var vm = this;
 
@@ -27,6 +27,8 @@
     vm.isSubCategoryConcernedByEdit = isSubCategoryConcernedByEdit;
     vm.validateCategoryEdit = validateCategoryEdit;
     vm.validateSubCategoryEdit = validateSubCategoryEdit;
+    vm.showCategoryBankOperations = showCategoryBankOperations;
+    vm.showSubCategoryBankOperations = showSubCategoryBankOperations;
     vm.handleInputKeyPress = handleInputKeyPress;
 
 
@@ -137,6 +139,15 @@
           alert('Failed updating categories');
         });
       }
+    }
+
+    function showCategoryBankOperations(categoryIdx, type) {
+      var category = type === 'credit' ? vm.creditCategories[categoryIdx] : vm.chargeCategories[categoryIdx];
+      $location.path('/category/' + category.id + '/bankOperations');
+    }
+
+    function showSubCategoryBankOperations(categoryIdx, subCategoryIdx, type) {
+
     }
 
     /**

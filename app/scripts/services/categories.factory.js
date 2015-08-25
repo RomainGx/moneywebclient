@@ -22,7 +22,8 @@
         update: {
           method: 'PUT'
         }
-      })
+      }),
+      BankOperations: $resource('http://localhost:9090/categories/:categoryId/bankOperations')
     };
   }
 })();

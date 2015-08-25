@@ -1,0 +1,52 @@
+/*************** Styles liés aux sous-catégories ***************/
+
+#subCategories {
+  width: 35%;
+}
+
+.action {
+  cursor: pointer;
+}
+
+/*************** Styles liés à la liste d'opérations ***************/
+
+#operationsList {
+  font-size: 11px;
+  margin-top: 20px;
+  max-height: 450px;
+  overflow-y: auto;
+}
+
+#operationsList .ng-table-pager {
+  display: none;
+}
+
+#operationsList > table {
+  margin-bottom: 0;
+}
+
+#operationsList > table thead {
+  background: #fff;
+}
+
+#operationsList > table > tbody > tr > td {
+  padding: 0;
+}
+
+.bankOperation:hover {
+  background-color: #e3f2fd;
+}
+
+/*************** Styles aux infos contenues dans la liste d'opérations ***************/
+
+.negative {
+  color: red;
+}
+
+.future {
+  background-color: #eeeeee;
+}
+
+.amount {
+  text-align: right;
+}

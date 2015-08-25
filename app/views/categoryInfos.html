@@ -1,0 +1,57 @@
+<h3>{{CategoryInfosCtrl.category.name}}</h3>
+
+<div ng-show="CategoryInfosCtrl.category.subCategories.length > 0">
+  <table id="subCategories" class="table table-condensed">
+    <tr ng-repeat="subCategory in CategoryInfosCtrl.category.subCategories">
+      <td>{{subCategory.name}}</td>
+      <td>
+        <span class="glyphicon glyphicon-stats action" aria-hidden="true" title="Voir sur le graphe"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-pencil action" aria-hidden="true" title="Renommer" ng-click="CategoriesCtrl.startEditingCategory($index, 'charge')"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true" title="Supprimer"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-eye-open action" aria-hidden="true" title="Plus d'infos sur la sous-catégorie" ng-click="CategoriesCtrl.showCategoryBankOperations($index, 'charge')"></span>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<label for="duration">Période de référence</label>
+<select id="duration"
+        ng-model="CategoryInfosCtrl.duration"
+        ng-change="CategoryInfosCtrl.updateChart()">
+  <option value="3">3</option>
+  <option value="6">6</option>
+  <option value="9">9</option>
+  <option value="12">12</option>
+</select>
+<select id="period"
+        ng-model="CategoryInfosCtrl.period"
+        ng-change="CategoryInfosCtrl.updateChart()">
+  <option value="month">Mois</option>
+  <option value="year">Année</option>
+</select>
+
+<div google-chart chart="CategoryInfosCtrl.chartConfig" style="height:700px; width:100%;"></div>
+
+<div id="operationsList">
+  <table ng-table="CategoryInfosCtrl.tableParams" show-filter="false" class="table table-condensed" fixed-table-headers="operationsList">
+    <tr ng-repeat="operation in $data"
+        class="bankOperation"
+        ng-class="{ 'future': operation.operationDate > CategoryInfosCtrl.today }"
+        on-finish-render="ngRepeatFinished">
+      <td data-title="'ID'" sortable="'id'">{{operation.id}}</td>
+      <td data-title="'Sous-catégorie'" sortable="'subCategory.name'">{{operation.subCategory.name}}</td>
+      <td data-title="'Num chèque'" sortable="'bankNoteNum'">{{operation.bankNoteNum}}</td>
+      <td data-title="'Date'" sortable="'operationDate'">{{operation.operationDateHuman}}</td>
+      <td data-title="'Tiers'" sortable="'thirdParty.name'">{{operation.thirdParty.name}}</td>
+      <td data-title="'Montant'" class="amount">
+        <span ng-class="{negative: operation.amount < 0}">{{operation.amount | currency}}</span>
+      </td>
+    </tr>
+  </table>
+</div>

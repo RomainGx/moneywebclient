@@ -18,7 +18,8 @@ angular
     'ngTouch',
     'ngTable',
     'ui.bootstrap',
-    'door3.css'
+    'door3.css',
+    'googlechart'
   ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -48,6 +49,12 @@ angular
         controller: 'CategoriesCtrl',
         controllerAs: 'CategoriesCtrl',
         css: 'styles/categories.css'
+      })
+      .when('/category/:categoryId/bankOperations', {
+        templateUrl: 'views/categoryInfos.html',
+        controller: 'CategoryInfosCtrl',
+        controllerAs: 'CategoryInfosCtrl',
+        css: 'styles/categoryInfos.css'
       })
       .otherwise({
         redirectTo: '/accounts'
