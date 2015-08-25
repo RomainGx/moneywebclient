@@ -117,8 +117,7 @@
           vm.totalNumOperations = vm.bankOperations.length;
 
           var orderBy = getOrderBy(params);
-          var filteredOperations = [];
-          filteredOperations = params.sorting() ? $filter('orderBy')(vm.bankOperations, orderBy) : vm.bankOperations;
+          var filteredOperations = params.sorting() ? $filter('orderBy')(vm.bankOperations, orderBy) : vm.bankOperations;
 
           if (vm.search) {
             vm.search = vm.search.toLowerCase();
@@ -185,7 +184,8 @@
      */
     function computeBalanceOnBankOperations() {
       var balance = vm.account.startingBalance;
-      var currentBalance = 0;
+      var currentBalance = balance;
+
 
       for (var i=0 ; i < vm.bankOperations.length ; i++) {
         balance += vm.bankOperations[i].credit;
@@ -420,6 +420,7 @@
         });
       }
       else {
+        delete vm.currentBankOperation.subCategory;
         deferred.resolve(vm.currentBankOperation.subCategory);
       }
 
@@ -438,9 +439,13 @@
       if (vm.currentBankOperation.id) {
         BankOperations.update({accountId: vm.account.id, operationId: vm.currentBankOperation.id}, vm.currentBankOperation, function (bankOperation) {
           var oldBankOperationIdx = Utils.getPositionInArray(vm.bankOperations, bankOperation.id);
+
           if (oldBankOperationIdx > -1) {
+            vm.bankOperations.splice(oldBankOperationIdx, 1);
+            var idx = getOperationInsertionIdx(bankOperation);
+
             bankOperation.operationDateHuman = Utils.getHumanDateFromUnixTimestamp(bankOperation.operationDate);
-            vm.bankOperations[oldBankOperationIdx] = bankOperation;
+            vm.bankOperations.splice(idx, 0, bankOperation);
             vm.account = bankOperation.account;
 
             vm.tableParams.reload();
@@ -453,7 +458,11 @@
       }
       else {
         BankOperations.save({accountId: vm.account.id}, vm.currentBankOperation, function (bankOperation) {
-          vm.bankOperations.push(bankOperation);
+          var idx = getOperationInsertionIdx(bankOperation);
+
+          vm.bankOperations.splice(idx, 0, bankOperation);
+          vm.account = bankOperation.account;
+
           vm.tableParams.reload();
 
           deferred.resolve(bankOperation);
@@ -463,6 +472,37 @@
       }
 
       return deferred.promise;
+    }
+
+    /**
+     * Retourne l'index auquel l'opération passée en paramètre doit être insérée
+     * dans la liste des opérations.
+     * L'emplacement de l'opération est déterminé par la date puis par l'ID, car c'est dans cet ordre
+     * que sont calculés les soldes au moment de chaque opération.
+     * @returns {number} Index auquel insérer l'opération.
+     */
+    function getOperationInsertionIdx(bankOperation) {
+      var idx, i;
+
+      idx = vm.bankOperations.length;
+
+      // Recherche de l'emplacement par rapport à la date
+      for (i=vm.bankOperations.length - 1 ;  i >= 0 ; i--) {
+        if (vm.bankOperations[i].operationDate <= bankOperation.operationDate) {
+          // Affinage de la recherche par rapport à l'ID
+          for (i=idx-1 ; i >= 0 ; i--) {
+            if (vm.bankOperations[i].id < bankOperation.id || vm.bankOperations[i].operationDate != bankOperation.operationDate) {
+              break;
+            }
+            idx--;
+          }
+
+          break;
+        }
+        idx--;
+      }
+
+      return idx;
     }
 
     /**
@@ -492,12 +532,12 @@
     function handleDateChangeByKeyboard(event) {
       var code = event.which ? event.which : event.keyCode;
 
-      if (code === 43 || code == 61) {
+      if (code === 43) {
         vm.currentBankOperation.operationDate = moment(vm.currentBankOperation.operationDate, 'DD/MM/YYYY').add('1', 'day').format('DD/MM/YYYY');
         event.preventDefault();
         return false;
       }
-      else if (code === 45 || code == 54) {
+      else if (code === 45) {
         vm.currentBankOperation.operationDate = moment(vm.currentBankOperation.operationDate, 'DD/MM/YYYY').add('-1', 'day').format('DD/MM/YYYY');
         event.preventDefault();
         return false;

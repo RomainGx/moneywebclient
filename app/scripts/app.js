@@ -43,6 +43,12 @@ angular
         controllerAs: 'AccountDetailsCtrl',
         css: 'styles/accountDetails.css'
       })
+      .when('/categories', {
+        templateUrl: 'views/categories.html',
+        controller: 'CategoriesCtrl',
+        controllerAs: 'CategoriesCtrl',
+        css: 'styles/categories.css'
+      })
       .otherwise({
         redirectTo: '/accounts'
       });

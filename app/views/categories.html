@@ -1,0 +1,117 @@
+<table id="chargeCategoriesTable" class="table table-condensed">
+  <tr>
+    <th>Charges</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tbody ng-repeat="category in CategoriesCtrl.chargeCategories">
+    <tr class="line">
+      <td class="category editable">
+        <span ng-hide="CategoriesCtrl.isCategoryConcernedByEdit($index, 'charge')">{{category.name}}</span>
+        <input type="text"
+               class="form-control input-sm"
+               ng-model="CategoriesCtrl.editedLabel"
+               ng-model-onblur
+               ng-show="CategoriesCtrl.isCategoryConcernedByEdit($index, 'charge')"
+               ng-keyup="CategoriesCtrl.handleInputKeyPress($event)"
+               ng-blur="CategoriesCtrl.validateCategoryEdit($index, 'charge')"/>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-pencil action" aria-hidden="true" ng-click="CategoriesCtrl.startEditingCategory($index, 'charge')"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+      </td>
+      <td></td>
+    </tr>
+    <tr ng-repeat="subCategory in category.subCategories" class="line">
+      <td class="subCategory">
+        <span ng-hide="CategoriesCtrl.isSubCategoryConcernedByEdit($parent.$index, $index, 'charge')">{{subCategory.name}}</span>
+        <input type="text"
+               class="form-control input-sm"
+               ng-model="CategoriesCtrl.editedLabel"
+               ng-model-onblur
+               ng-show="CategoriesCtrl.isSubCategoryConcernedByEdit($parent.$index, $index, 'charge')"
+               ng-keyup="CategoriesCtrl.handleInputKeyPress($event)"
+               ng-blur="CategoriesCtrl.validateSubCategoryEdit($parent.$index, $index, 'charge')"/>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-pencil action" aria-hidden="true" ng-click="CategoriesCtrl.startEditingSubCategory($parent.$index, $index, 'charge')"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<br/><br/><br/>
+
+<table class="table table-condensed">
+  <tr>
+    <th>Crédits</th>
+    <th></th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+  <tbody ng-repeat="category in CategoriesCtrl.creditCategories">
+    <tr class="line">
+      <td class="category editable">
+        <span ng-hide="CategoriesCtrl.isCategoryConcernedByEdit($index, 'credit')">{{category.name}}</span>
+        <input type="text"
+               class="form-control input-sm"
+               ng-model="CategoriesCtrl.editedLabel"
+               ng-model-onblur
+               ng-show="CategoriesCtrl.isCategoryConcernedByEdit($index, 'credit')"
+               ng-keyup="CategoriesCtrl.handleInputKeyPress($event)"
+               ng-blur="CategoriesCtrl.validateCategoryEdit($index, 'credit')"/>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-pencil action" aria-hidden="true" ng-click="CategoriesCtrl.startEditingCategory($index, 'credit')"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+      </td>
+      <td></td>
+    </tr>
+    <tr ng-repeat="subCategory in category.subCategories" class="line">
+      <td class="subCategory editable">
+        <span ng-hide="CategoriesCtrl.isSubCategoryConcernedByEdit($parent.$index, $index, 'credit')">{{subCategory.name}}</span>
+        <input type="text"
+               class="form-control input-sm"
+               ng-model="CategoriesCtrl.editedLabel"
+               ng-model-onblur
+               ng-show="CategoriesCtrl.isSubCategoryConcernedByEdit($parent.$index, $index, 'credit')"
+               ng-keyup="CategoriesCtrl.handleInputKeyPress($event)"
+               ng-blur="CategoriesCtrl.validateSubCategoryEdit($parent.$index, $index, 'credit')"/>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-pencil action" aria-hidden="true" ng-click="CategoriesCtrl.startEditingSubCategory($parent.$index, $index, 'credit')"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+      </td>
+      <td>
+        <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+      </td>
+    </tr>
+  </tbody>
+</table>

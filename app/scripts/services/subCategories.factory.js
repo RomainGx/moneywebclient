@@ -7,7 +7,7 @@
 
   SubCategories.$inject = ['$resource'];
   function SubCategories($resource) {
-    return $resource('http://localhost:9090/subCategories/:subCategoryId', {subCategoryId: '@id'}, {
+    return $resource('http://localhost:9090/categories/:categoryId/subCategories/:subCategoryId', {}, {
       update: {
         method: 'PUT'
       }
