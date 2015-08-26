@@ -1,3 +1,5 @@
+{{CategoryInfosCtrl.subCategoriesGraphActivation}}
+
 <h3>{{CategoryInfosCtrl.category.name}}</h3>
 
 <div ng-show="CategoryInfosCtrl.category.subCategories.length > 0">
@@ -5,16 +7,16 @@
     <tr ng-repeat="subCategory in CategoryInfosCtrl.category.subCategories">
       <td>{{subCategory.name}}</td>
       <td>
-        <span class="glyphicon glyphicon-stats action" aria-hidden="true" title="Voir sur le graphe"></span>
+        <span class="glyphicon glyphicon-stats action" aria-hidden="true" title="Voir sur le graphe" ng-class="{unshown: !CategoryInfosCtrl.isSubCategoryShownOnGraph(subCategory)}" ng-click="CategoryInfosCtrl.toggleShowOnGraph(subCategory.id)"></span>
       </td>
       <td>
-        <span class="glyphicon glyphicon-pencil action" aria-hidden="true" title="Renommer" ng-click="CategoriesCtrl.startEditingCategory($index, 'charge')"></span>
+        <span class="glyphicon glyphicon-pencil action" aria-hidden="true" title="Renommer" ng-click="CategoryInfosCtrl.startEditingCategory($index)"></span>
       </td>
       <td>
         <span class="glyphicon glyphicon-trash" aria-hidden="true" title="Supprimer"></span>
       </td>
       <td>
-        <span class="glyphicon glyphicon-eye-open action" aria-hidden="true" title="Plus d'infos sur la sous-catégorie" ng-click="CategoriesCtrl.showCategoryBankOperations($index, 'charge')"></span>
+        <span class="glyphicon glyphicon-eye-open action" aria-hidden="true" title="Plus d'infos sur la sous-catégorie" ng-click="CategoryInfosCtrl.showCategoryBankOperations($index)"></span>
       </td>
     </tr>
   </table>

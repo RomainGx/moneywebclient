@@ -6,34 +6,87 @@
     .controller('CategoryInfosCtrl', CategoryInfosCtrl);
 
 
-  CategoryInfosCtrl.$inject = ['$scope', '$routeParams', '$filter', 'ngTableParams', 'Utils', 'Categories'];
-  function CategoryInfosCtrl($scope, $routeParams, $filter, ngTableParams, Utils, Categories)
+  CategoryInfosCtrl.$inject = ['$scope', '$routeParams', '$q', '$filter', 'ngTableParams', 'Utils', 'Categories'];
+  function CategoryInfosCtrl($scope, $routeParams, $q, $filter, ngTableParams, Utils, Categories)
   {
     var vm = this;
 
     /** Paramètres utilisés par ng-table pour la liste des opérations. */
     vm.tableParams = null;
-    vm.category = Categories.Common.get({categoryId: $routeParams.categoryId});
-    vm.bankOperations = loadBankOperations();
+    vm.category = {};
+    vm.subCategoriesGraphActivation = undefined;
+    vm.bankOperations = [];
     vm.chartConfig = undefined;
     vm.period = 'month';
     vm.duration = 6;
 
     vm.updateChart = updateChart;
+    vm.toggleShowOnGraph = toggleShowOnGraph;
+    vm.isSubCategoryShownOnGraph = isSubCategoryShownOnGraph;
 
 
+    loadData();
     Utils.scrollToEndOfTableWhenRendered($scope, $('#operationsList'));
 
 
-    function loadBankOperations() {
-      return Categories.BankOperations.query({categoryId: $routeParams.categoryId}, function() {
-        if (vm.tableParams) {
-          vm.tableParams.reload();
+    function loadData() {
+      loadCategory()
+        .then(function (category) {
+          vm.category = category;
+        })
+        .then(loadBankOperations)
+        .then(function (bankOperations) {
+          vm.bankOperations = bankOperations;
+          vm.isEditing = false;
+          vm.operationSelected = false;
+
+          if (vm.tableParams) {
+            vm.tableParams.reload();
+          }
+          else {
+            configTableParams();
+          }
+        })
+        .catch(function(handleReject) {
+          alert('error ' + handleReject);
+        });
+    }
+
+    function loadCategory() {
+      var deferred = $q.defer();
+
+      Categories.Common.get({categoryId: $routeParams.categoryId}, function (category) {
+        if (!vm.subCategoriesGraphActivation) {
+          vm.subCategoriesGraphActivation = {};
+
+          for (var i=0 ; i < category.subCategories.length ; i++) {
+            vm.subCategoriesGraphActivation[category.subCategories[i].id] = true;
+          }
         }
-        else {
-          configTableParams();
-        }
+
+        deferred.resolve(category);
+      }, function () {
+        deferred.reject('Failed getting category');
       });
+
+      return deferred.promise;
+    }
+
+    function toggleShowOnGraph(subCategoryId) {
+      vm.subCategoriesGraphActivation[subCategoryId] = !vm.subCategoriesGraphActivation[subCategoryId];
+      updateChart();
+    }
+
+    function loadBankOperations() {
+      var deferred = $q.defer();
+
+      Categories.BankOperations.query({categoryId: $routeParams.categoryId}, function(bankOperations) {
+        deferred.resolve(bankOperations);
+      }, function () {
+        deferred.reject('Failed getting bank operations');
+      });
+
+      return deferred.promise;
     }
 
     /**
@@ -70,6 +123,9 @@
       }
     }
 
+    /**
+     * Met à jour le graphe.
+     */
     function updateChart() {
       var chartData = computeChartData();
 
@@ -93,59 +149,61 @@
       };
     }
 
+    /**
+     * Rassemble sous forme de tableau les données à afficher dans le graphe.
+     * @returns {Array} Données à afficher dans le graphe.
+     */
     function computeChartData() {
-      var referenceMoment = computeStartingReferenceMoment(),
+      var referenceMoment = getGraphStartingDate(),
         chartData = [],
-        dataOfPeriod = [],
-        periodChanges = 0,
+        dataOfPeriod,
+        nbPeriods = 0,
         operationIdx, columnIdx, subCategoriesColumnMap,
         startOfPeriod, endOfPeriod;
 
       subCategoriesColumnMap = addHeaders(chartData);
 
+      // Crée la période initiale
       startOfPeriod = referenceMoment.startOf(vm.period).unix() * 1000;
       endOfPeriod = referenceMoment.endOf(vm.period).unix() * 1000;
+      dataOfPeriod = initNewDataOfPeriod(chartData, referenceMoment, subCategoriesColumnMap);
+      nbPeriods++;
+
 
       // Parcours des opérations dans le sens anti-chronologique
       operationIdx = vm.bankOperations.length - 1;
       while (operationIdx >= 0) {
-        // Si l'opération fait partie de la période actuellement scannée, on vérifie s'il faut créer un nouveau dataOfPeriod
-        if (vm.bankOperations[operationIdx].operationDate >= startOfPeriod && vm.bankOperations[operationIdx].operationDate <= endOfPeriod) {
-          if (dataOfPeriod.length == 0) {
-            periodChanges++;
-            if (periodChanges > vm.duration) {
-              break;
+        if (showOperationOnGraph(vm.bankOperations[operationIdx])) {
+          if (isInPeriod(operationIdx, startOfPeriod, endOfPeriod)) {
+            // L'opération est affectée à une sous-catégorie
+            if (vm.bankOperations[operationIdx].subCategory) {
+              columnIdx = subCategoriesColumnMap[vm.bankOperations[operationIdx].subCategory.id];
+            }
+            // Ou est sans sous-catégorie
+            else {
+              columnIdx = subCategoriesColumnMap[-1];
             }
 
-            dataOfPeriod = initNewDataOfPeriod(chartData, referenceMoment, subCategoriesColumnMap);
+            dataOfPeriod[columnIdx] += vm.bankOperations[operationIdx].amount;
+            operationIdx--;
           }
-        }
-        // Changement de période
-        else {
-          referenceMoment = moment.unix(startOfPeriod / 1000).subtract(1, vm.period);
-          startOfPeriod = referenceMoment.unix() * 1000;
-          endOfPeriod = referenceMoment.endOf(vm.period).unix() * 1000;
-
-          periodChanges++;
-          if (periodChanges > vm.duration) {
-            break;
-          }
-
-          dataOfPeriod = initNewDataOfPeriod(chartData, referenceMoment, subCategoriesColumnMap);
-        }
-
-        // Si l'opération fait partie de la période actuellement scannée, on l'ajoute aux données existantes
-        if (vm.bankOperations[operationIdx].operationDate >= startOfPeriod && vm.bankOperations[operationIdx].operationDate <= endOfPeriod) {
-          if (vm.bankOperations[operationIdx].subCategory) {
-            columnIdx = subCategoriesColumnMap[vm.bankOperations[operationIdx].subCategory.id];
-          }
+          // Aucune opération n'entrera plus dans la période courante : on passe à la période suivante
           else {
-            columnIdx = subCategoriesColumnMap[-1];
+            nbPeriods++;
+            if (nbPeriods > vm.duration) {
+              break;
+            }
+            else {
+              referenceMoment = moment.unix(startOfPeriod / 1000).subtract(1, vm.period);
+              startOfPeriod = referenceMoment.unix() * 1000;
+              endOfPeriod = referenceMoment.endOf(vm.period).unix() * 1000;
+
+              dataOfPeriod = initNewDataOfPeriod(chartData, referenceMoment, subCategoriesColumnMap);
+            }
           }
-
-          dataOfPeriod[columnIdx] += vm.bankOperations[operationIdx].amount;
-
-          // On avance à l'opération suivante (dans l'ordre anti-chronologique)
+        }
+        // L'opération n'apparait pas sur le graphe, on passe à la suivante
+        else {
           operationIdx--;
         }
       }
@@ -153,28 +211,78 @@
       return chartData;
     }
 
-    function computeStartingReferenceMoment() {
-      var lastOperationDate, referenceMoment = moment();
+    /**
+     * Détermine la date à partir de laquelle commencer le graphe.
+     * Ce peut être la date d'aujourd'hui, ou la date d'une opération qui est planifiée dans le futur.
+     * @returns {moment} Date de début du graphe.
+     */
+    function getGraphStartingDate() {
+      var startingMoment = moment(), idx;
 
       if (vm.bankOperations.length > 0) {
-        lastOperationDate = moment.unix(vm.bankOperations[vm.bankOperations.length - 1].operationDate / 1000);
+        idx = vm.bankOperations.length - 1;
 
-        if (lastOperationDate.unix() > referenceMoment.unix()) {
-          referenceMoment = lastOperationDate;
+        while (idx >= 0) {
+          // On cherche la 1ère opération qui sera visible sur le graphe
+          if (showOperationOnGraph(vm.bankOperations[idx])) {
+            // Si l'opération est dans le futur, c'est d'elle qu'on part
+            if (vm.bankOperations[idx].operationDate > startingMoment.unix() * 1000) {
+              startingMoment = moment.unix(vm.bankOperations[idx].operationDate / 1000);
+            }
+            break;
+          }
+          idx--;
         }
       }
 
-      return referenceMoment;
+      return startingMoment;
+    }
+
+    /**
+     * Détermine si l'opération située à l'index operationIdx se situe dans une période donnée.
+     * @param operationIdx Index de l'opération à tester.
+     * @param startOfPeriod Timestamp de début de la période (en ms)
+     * @param endOfPeriod Timestamp de fin de la période (en ms)
+     * @returns {boolean} true si l'opération se situe dans la période, false si elle est en-dehors
+     */
+    function isInPeriod(operationIdx, startOfPeriod, endOfPeriod) {
+      return vm.bankOperations[operationIdx].operationDate >= startOfPeriod && vm.bankOperations[operationIdx].operationDate <= endOfPeriod;
+    }
+
+    /**
+     * Détermine si une opération doit apparaitre sur le graphe ou non.
+     * @param bankOperation L'opération à tester.
+     * @returns {boolean} true si l'opération doit apparaitre sur le graphe, false sinon.
+     */
+    function showOperationOnGraph(bankOperation) {
+      // Aucune sous-catégorie
+      return !bankOperation.subCategory ||
+        // Ou alors la sous-catégorie est visible
+        isSubCategoryShownOnGraph(bankOperation.subCategory);
+    }
+
+    /**
+     * Détermine si une sous-catégorie est visible ou non sur le graphe.
+     * @param subCategory Sous-catégorie à tester.
+     * @returns {boolean} true si la sous-catégorie est visible, false sinon.
+     */
+    function isSubCategoryShownOnGraph(subCategory) {
+      return subCategory && vm.subCategoriesGraphActivation[subCategory.id] === true;
     }
 
     function addHeaders(chartData) {
-      var header = [vm.period === 'month' ? 'Mois' : 'Année'];
+      var header = [vm.period === 'month' ? 'Mois' : 'Année'],
+        categoryIdx;
       var subCategoriesColumnMap = {};
 
       if (vm.category.subCategories.length > 0) {
+        categoryIdx = 1;
         for (var i = 0; i < vm.category.subCategories.length ; i++) {
-          header.push(vm.category.subCategories[i].name);
-          subCategoriesColumnMap[vm.category.subCategories[i].id] = i + 1;
+          if (isSubCategoryShownOnGraph(vm.category.subCategories[i])) {
+            header.push(vm.category.subCategories[i].name);
+            subCategoriesColumnMap[vm.category.subCategories[i].id] = categoryIdx;
+            categoryIdx++;
+          }
         }
       }
 
@@ -186,13 +294,13 @@
       return subCategoriesColumnMap;
     }
 
-    function initNewDataOfPeriod(chartData, referenceMoment, headerMap) {
+    function initNewDataOfPeriod(chartData, referenceMoment, subCategoriesColumnMap) {
       var dataOfPeriod = [];
 
       chartData.push(dataOfPeriod);
       dataOfPeriod.push(referenceMoment.format(vm.period === 'month' ? 'MM/YYYY' : 'YYYY'));
 
-      for (var column=0 ; column < Object.keys(headerMap).length ; column++) {
+      for (var column=0 ; column < Object.keys(subCategoriesColumnMap).length ; column++) {
         dataOfPeriod.push(0);
       }
 

@@ -8,6 +8,10 @@
   cursor: pointer;
 }
 
+.unshown {
+  opacity: 0.2;
+}
+
 /*************** Styles liés à la liste d'opérations ***************/
 
 #operationsList {
