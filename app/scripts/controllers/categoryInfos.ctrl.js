@@ -139,13 +139,21 @@
      * Met à jour le graphe.
      */
     function updateChart() {
-      var chartData = computeChartData();
+      var chartData, types;
+
+      chartData = computeChartData();
+      types = ['string'];
+
+      for (var i=0 ; i < chartData[0].length ; i++) {
+        types.push('number');
+      }
+
       loadGraphColors();
 
       vm.chartConfig = {
         type: "SteppedAreaChart",
         displayed: true,
-        data: arrayToDataTable(chartData),
+        data: Utils.arrayToDataTable(chartData, types),
         options: {
           isStacked: true,
           connectSteps: false,
@@ -361,56 +369,6 @@
       }
 
       return dataOfPeriod;
-    }
-
-    /**
-     *
-     * @param data Exemple :
-     * <code>var data = arrayToDataTable([
-     * ['Director (Year)',  'Rotten Tomatoes', 'IMDB'],
-     * ['Alfred Hitchcock (1935)', 8.4,         7.9],
-     * ['Ralph Thomas (1959)',     6.9,         6.5],
-     * ['Don Sharp (1978)',        6.5,         6.4],
-     * ['James Hawes (2008)',      4.4,         6.2]
-     * ]);</code>
-     * @returns {{cols: Array, rows: Array}}
-     */
-    function arrayToDataTable(data) {
-      var line = 0,
-        column,
-        cols = [],
-        rows = [];
-
-      for (column=0 ; column < data[line].length ; column++) {
-        var col = {
-          id: 'col-' + column,
-          label: data[0][column],
-          type: column === 0 ? 'string' : 'number',
-          p: {}
-        };
-        cols.push(col);
-      }
-
-      line++;
-
-      for ( ; line < data.length ; line++) {
-        var row = {
-          c: []
-        };
-
-        for (column=0 ; column < data[line].length ; column++) {
-          var insideRow = {
-            v: column === 0 ? data[line][column] : data[line][column].toFixed(2)
-          };
-          row.c.push(insideRow);
-        }
-        rows.push(row);
-      }
-
-      return {
-        cols : cols,
-        rows : rows
-      };
     }
 
     function startCreating() {

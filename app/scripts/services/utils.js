@@ -66,6 +66,57 @@
         scope.$on('ngRepeatFinished', function(ngRepeatFinishedEvent) {
           scrollView.animate({scrollTop: scrollView.get(0).scrollHeight});
         });
+      },
+
+      /**
+       * Transforme un tableau de données en données formattées pour Google Charts.
+       * @param data Exemple :
+       * <code>var data = arrayToDataTable([
+       * ['Director (Year)',  'Rotten Tomatoes', 'IMDB'],
+       * ['Alfred Hitchcock (1935)', 8.4,         7.9],
+       * ['Ralph Thomas (1959)',     6.9,         6.5],
+       * ['Don Sharp (1978)',        6.5,         6.4],
+       * ['James Hawes (2008)',      4.4,         6.2]
+       * ]);</code>
+       * @param types Tableau contenant les types de données de chaque colonne.
+       * @returns {{cols: Array, rows: Array}}
+       */
+      arrayToDataTable: function(data, types) {
+        var line = 0,
+          column,
+          cols = [],
+          rows = [];
+
+        for (column=0 ; column < data[line].length ; column++) {
+          var col = {
+            id: 'col-' + column,
+            label: data[0][column],
+            type: types[column],
+            p: {}
+          };
+          cols.push(col);
+        }
+
+        line++;
+
+        for ( ; line < data.length ; line++) {
+          var row = {
+            c: []
+          };
+
+          for (column=0 ; column < data[line].length ; column++) {
+            var insideRow = {
+              v: types[column] === 'string' ? data[line][column] : data[line][column].toFixed(2)
+            };
+            row.c.push(insideRow);
+          }
+          rows.push(row);
+        }
+
+        return {
+          cols : cols,
+          rows : rows
+        };
       }
     }
   }
