@@ -1,7 +1,7 @@
 /*************** Styles liés aux sous-catégories ***************/
 
 #subCategories {
-  width: 35%;
+  width: 20%;
 }
 
 .action {
@@ -41,7 +41,7 @@
   background-color: #e3f2fd;
 }
 
-/*************** Styles aux infos contenues dans la liste d'opérations ***************/
+/*************** Styles liés aux infos contenues dans la liste d'opérations ***************/
 
 .negative {
   color: red;
@@ -54,3 +54,24 @@
 .amount {
   text-align: right;
 }
+
+/*************** Styles liés aux graphes ***************/
+
+#bigGraph {
+  width: 100%;
+  height: 500px;
+}
+
+.legendBloc {
+  width: 30px;
+  height: 15px;
+}
+
+.legendCol {
+  width: 30px;
+}
+
+.iconCol {
+  width: 8px;
+}
+

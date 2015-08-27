@@ -6,8 +6,8 @@
     .controller('CategoryInfosCtrl', CategoryInfosCtrl);
 
 
-  CategoryInfosCtrl.$inject = ['$scope', '$routeParams', '$q', '$filter', 'ngTableParams', 'Utils', 'Categories'];
-  function CategoryInfosCtrl($scope, $routeParams, $q, $filter, ngTableParams, Utils, Categories)
+  CategoryInfosCtrl.$inject = ['$scope', '$routeParams', '$q', '$filter', 'ngTableParams', 'Utils', 'Categories', 'DEFAULT_COLORS'];
+  function CategoryInfosCtrl($scope, $routeParams, $q, $filter, ngTableParams, Utils, Categories, DEFAULT_COLORS)
   {
     var vm = this;
 
@@ -19,10 +19,15 @@
     vm.chartConfig = undefined;
     vm.period = 'month';
     vm.duration = 6;
+    /** Map liant une couleur à chaque sous-catégorie. */
+    vm.subCategoryColors = {};
+    /** Liste de couleurs utilisée par le graphe (change selon les catégories sélectionnées). */
+    vm.graphColors = [];
 
     vm.updateChart = updateChart;
     vm.toggleShowOnGraph = toggleShowOnGraph;
     vm.isSubCategoryShownOnGraph = isSubCategoryShownOnGraph;
+    vm.getSubCategoryColor = getSubCategoryColor;
 
 
     loadData();
@@ -33,6 +38,11 @@
       loadCategory()
         .then(function (category) {
           vm.category = category;
+
+          // Initialise la map liant une catégorie à une couleur
+          for (var i=0 ; i < category.subCategories.length ; i++) {
+            vm.subCategoryColors[category.subCategories[i].id] = DEFAULT_COLORS[i];
+          }
         })
         .then(loadBankOperations)
         .then(function (bankOperations) {
@@ -137,14 +147,27 @@
           isStacked: true,
           connectSteps: false,
           legend: {
-            position: 'bottom',
-            maxLines: 3
+            position: 'none'
           },
           selectionMode: 'multiple',
           tooltip: {
             trigger: 'selection'
           },
-          aggregationTarget: 'auto'
+          aggregationTarget: 'auto',
+          areaOpacity: 0.8,
+          colors: vm.graphColors,
+          chartArea: {
+            width:'85%',
+            height: '90%'
+          },
+          vAxis: {
+            title: 'Montant (€)',
+            textStyle: { fontSize: 12 },
+            titleTextStyle: { fontSize: 12 }
+          },
+          hAxis: {
+            textStyle: { fontSize: 12 }
+          }
         }
       };
     }
@@ -270,10 +293,16 @@
       return subCategory && vm.subCategoriesGraphActivation[subCategory.id] === true;
     }
 
+    function getSubCategoryColor(subCategoryIdx) {
+      return DEFAULT_COLORS[subCategoryIdx];
+    }
+
     function addHeaders(chartData) {
       var header = [vm.period === 'month' ? 'Mois' : 'Année'],
         categoryIdx;
       var subCategoriesColumnMap = {};
+
+      vm.graphColors = [];
 
       if (vm.category.subCategories.length > 0) {
         categoryIdx = 1;
@@ -281,6 +310,7 @@
           if (isSubCategoryShownOnGraph(vm.category.subCategories[i])) {
             header.push(vm.category.subCategories[i].name);
             subCategoriesColumnMap[vm.category.subCategories[i].id] = categoryIdx;
+            vm.graphColors.push(vm.subCategoryColors[vm.category.subCategories[i].id]);
             categoryIdx++;
           }
         }

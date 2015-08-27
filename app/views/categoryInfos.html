@@ -1,21 +1,22 @@
-{{CategoryInfosCtrl.subCategoriesGraphActivation}}
-
 <h3>{{CategoryInfosCtrl.category.name}}</h3>
 
 <div ng-show="CategoryInfosCtrl.category.subCategories.length > 0">
   <table id="subCategories" class="table table-condensed">
     <tr ng-repeat="subCategory in CategoryInfosCtrl.category.subCategories">
+      <td class="legendCol">
+        <div class="legendBloc" ng-style="{'background-color':CategoryInfosCtrl.getSubCategoryColor($index)}"></div>
+      </td>
       <td>{{subCategory.name}}</td>
-      <td>
+      <td class="iconCol">
         <span class="glyphicon glyphicon-stats action" aria-hidden="true" title="Voir sur le graphe" ng-class="{unshown: !CategoryInfosCtrl.isSubCategoryShownOnGraph(subCategory)}" ng-click="CategoryInfosCtrl.toggleShowOnGraph(subCategory.id)"></span>
       </td>
-      <td>
+      <td class="iconCol">
         <span class="glyphicon glyphicon-pencil action" aria-hidden="true" title="Renommer" ng-click="CategoryInfosCtrl.startEditingCategory($index)"></span>
       </td>
-      <td>
+      <td class="iconCol">
         <span class="glyphicon glyphicon-trash" aria-hidden="true" title="Supprimer"></span>
       </td>
-      <td>
+      <td class="iconCol">
         <span class="glyphicon glyphicon-eye-open action" aria-hidden="true" title="Plus d'infos sur la sous-catégorie" ng-click="CategoryInfosCtrl.showCategoryBankOperations($index)"></span>
       </td>
     </tr>
@@ -35,7 +36,7 @@
   <option value="year">Année</option>
 </select>
 
-<div google-chart chart="CategoryInfosCtrl.chartConfig" style="height:700px; width:100%;"></div>
+<div id="bigGraph" google-chart chart="CategoryInfosCtrl.chartConfig"></div>
 
 <div id="operationsList">
   <table ng-table="CategoryInfosCtrl.tableParams" show-filter="false" class="table table-condensed" fixed-table-headers="operationsList">
