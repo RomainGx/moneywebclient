@@ -1,10 +1,10 @@
 <h3>{{CategoryInfosCtrl.category.name}}</h3>
 
-<div ng-show="CategoryInfosCtrl.category.subCategories.length > 0">
+<div id="subCategoriesBlock">
   <table id="subCategories" class="table table-condensed">
     <tr ng-repeat="subCategory in CategoryInfosCtrl.category.subCategories">
       <td class="legendCol">
-        <div class="legendBloc" ng-style="{'background-color':CategoryInfosCtrl.getSubCategoryColor($index)}"></div>
+        <div class="legendBloc" ng-style="{'background-color':CategoryInfosCtrl.getSubCategoryColor(subCategory.id)}"></div>
       </td>
       <td>{{subCategory.name}}</td>
       <td class="iconCol">
@@ -20,23 +20,39 @@
         <span class="glyphicon glyphicon-eye-open action" aria-hidden="true" title="Plus d'infos sur la sous-catégorie" ng-click="CategoryInfosCtrl.showCategoryBankOperations($index)"></span>
       </td>
     </tr>
+    <tr>
+      <td class="legendCol">
+        <div class="legendBloc" ng-style="{'background-color':CategoryInfosCtrl.getSubCategoryColor(-1)}"></div>
+      </td>
+      <td>Aucune sous-catégorie</td>
+      <td class="iconCol"></td>
+      <td class="iconCol"></td>
+      <td class="iconCol"></td>
+      <td class="iconCol"></td>
+    </tr>
   </table>
+
+  <button class="btn btn-sm">Nouveau</button>
 </div>
 
-<label for="duration">Période de référence</label>
-<select id="duration"
-        ng-model="CategoryInfosCtrl.duration"
-        ng-change="CategoryInfosCtrl.updateChart()"
-        ng-options="n for n in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]">
-</select>
-<select id="period"
-        ng-model="CategoryInfosCtrl.period"
-        ng-change="CategoryInfosCtrl.updateChart()">
-  <option value="month">Mois</option>
-  <option value="year">Année</option>
-</select>
+<div id="upperGraph">
+  <label for="duration">Période de référence</label>
+  <select id="duration"
+          ng-model="CategoryInfosCtrl.duration"
+          ng-change="CategoryInfosCtrl.updateChart()"
+          ng-options="n for n in [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24]">
+  </select>
+  <select id="period"
+          ng-model="CategoryInfosCtrl.period"
+          ng-change="CategoryInfosCtrl.updateChart()">
+    <option value="month">Mois</option>
+    <option value="year">Année</option>
+  </select>
 
-<div id="bigGraph" google-chart chart="CategoryInfosCtrl.chartConfig"></div>
+  <div id="bigGraph" google-chart chart="CategoryInfosCtrl.chartConfig"></div>
+</div>
+
+<br class="clear"/>
 
 <div id="operationsList">
   <table ng-table="CategoryInfosCtrl.tableParams" show-filter="false" class="table table-condensed" fixed-table-headers="operationsList">

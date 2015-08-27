@@ -1,7 +1,8 @@
 /*************** Styles liés aux sous-catégories ***************/
 
-#subCategories {
-  width: 20%;
+#subCategoriesBlock {
+  float: left;
+  min-width: 20%;
 }
 
 .action {
@@ -56,6 +57,12 @@
 }
 
 /*************** Styles liés aux graphes ***************/
+
+#upperGraph {
+  display: inline-block;
+  width: 75%;
+  margin-left:25px;
+}
 
 #bigGraph {
   width: 100%;

@@ -37,12 +37,14 @@
     function loadData() {
       loadCategory()
         .then(function (category) {
+          var i;
           vm.category = category;
 
           // Initialise la map liant une catégorie à une couleur
-          for (var i=0 ; i < category.subCategories.length ; i++) {
+          for (i=0 ; i < category.subCategories.length ; i++) {
             vm.subCategoryColors[category.subCategories[i].id] = DEFAULT_COLORS[i];
           }
+          vm.subCategoryColors[-1] = DEFAULT_COLORS[i];
         })
         .then(loadBankOperations)
         .then(function (bankOperations) {
@@ -293,8 +295,8 @@
       return subCategory && vm.subCategoriesGraphActivation[subCategory.id] === true;
     }
 
-    function getSubCategoryColor(subCategoryIdx) {
-      return DEFAULT_COLORS[subCategoryIdx];
+    function getSubCategoryColor(subCategoryId) {
+      return vm.subCategoryColors[subCategoryId];
     }
 
     function addHeaders(chartData) {
@@ -315,6 +317,9 @@
           }
         }
       }
+
+      // Couleur des opérations sans sous-catégorie
+      vm.graphColors.push(vm.subCategoryColors[-1]);
 
       header.push('Aucune sous-catégorie');
       subCategoriesColumnMap[-1] = vm.category.subCategories.length + 1;
