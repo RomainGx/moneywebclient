@@ -6,11 +6,13 @@
     .controller('CategoryInfosCtrl', CategoryInfosCtrl);
 
 
-  CategoryInfosCtrl.$inject = ['$scope', '$routeParams', '$q', '$filter', 'ngTableParams', 'Utils', 'Categories', 'DEFAULT_COLORS'];
-  function CategoryInfosCtrl($scope, $routeParams, $q, $filter, ngTableParams, Utils, Categories, DEFAULT_COLORS)
+  CategoryInfosCtrl.$inject = ['$scope', '$routeParams', '$q', '$filter', 'ngTableParams', 'Utils', 'Categories', 'SubCategories', 'DEFAULT_COLORS'];
+  function CategoryInfosCtrl($scope, $routeParams, $q, $filter, ngTableParams, Utils, Categories, SubCategories, DEFAULT_COLORS)
   {
     var vm = this;
 
+    vm.isCreating = false;
+    vm.newSubCategory = undefined;
     /** Paramètres utilisés par ng-table pour la liste des opérations. */
     vm.tableParams = null;
     vm.category = {};
@@ -24,6 +26,9 @@
     /** Liste de couleurs utilisée par le graphe (change selon les catégories sélectionnées). */
     vm.graphColors = [];
 
+    vm.startCreating = startCreating;
+    vm.finishCreating = finishCreating;
+    vm.cancelCreating = cancelCreating;
     vm.updateChart = updateChart;
     vm.toggleShowOnGraph = toggleShowOnGraph;
     vm.isSubCategoryShownOnGraph = isSubCategoryShownOnGraph;
@@ -37,14 +42,9 @@
     function loadData() {
       loadCategory()
         .then(function (category) {
-          var i;
           vm.category = category;
 
-          // Initialise la map liant une catégorie à une couleur
-          for (i=0 ; i < category.subCategories.length ; i++) {
-            vm.subCategoryColors[category.subCategories[i].id] = DEFAULT_COLORS[i];
-          }
-          vm.subCategoryColors[-1] = DEFAULT_COLORS[i];
+          loadCategoryColors();
         })
         .then(loadBankOperations)
         .then(function (bankOperations) {
@@ -115,7 +115,7 @@
         defaultSort: 'asc',
         getData: function($defer, params) {
           computeReadableDatesOnBankOperations();
-          updateChart('month');
+          updateChart();
 
           var orderBy = Utils.computeOrderBy(params);
           var filteredOperations = params.sorting() ? $filter('orderBy')(vm.bankOperations, orderBy) : vm.bankOperations;
@@ -140,6 +140,7 @@
      */
     function updateChart() {
       var chartData = computeChartData();
+      loadGraphColors();
 
       vm.chartConfig = {
         type: "SteppedAreaChart",
@@ -295,8 +296,34 @@
       return subCategory && vm.subCategoriesGraphActivation[subCategory.id] === true;
     }
 
+    function loadCategoryColors() {
+      var i;
+      vm.subCategoryColors = {};
+
+      // Initialise la map liant une catégorie à une couleur
+      for (i=0 ; i < vm.category.subCategories.length ; i++) {
+        vm.subCategoryColors[vm.category.subCategories[i].id] = DEFAULT_COLORS[i];
+      }
+      vm.subCategoryColors[-1] = DEFAULT_COLORS[i];
+    }
+
     function getSubCategoryColor(subCategoryId) {
       return vm.subCategoryColors[subCategoryId];
+    }
+
+    function loadGraphColors() {
+      vm.graphColors = [];
+
+      if (vm.category.subCategories.length > 0) {
+        for (var i = 0; i < vm.category.subCategories.length ; i++) {
+          if (isSubCategoryShownOnGraph(vm.category.subCategories[i])) {
+            vm.graphColors.push(vm.subCategoryColors[vm.category.subCategories[i].id]);
+          }
+        }
+      }
+
+      // Couleur des opérations sans sous-catégorie
+      vm.graphColors.push(vm.subCategoryColors[-1]);
     }
 
     function addHeaders(chartData) {
@@ -304,25 +331,19 @@
         categoryIdx;
       var subCategoriesColumnMap = {};
 
-      vm.graphColors = [];
-
       if (vm.category.subCategories.length > 0) {
         categoryIdx = 1;
         for (var i = 0; i < vm.category.subCategories.length ; i++) {
           if (isSubCategoryShownOnGraph(vm.category.subCategories[i])) {
             header.push(vm.category.subCategories[i].name);
             subCategoriesColumnMap[vm.category.subCategories[i].id] = categoryIdx;
-            vm.graphColors.push(vm.subCategoryColors[vm.category.subCategories[i].id]);
             categoryIdx++;
           }
         }
       }
 
-      // Couleur des opérations sans sous-catégorie
-      vm.graphColors.push(vm.subCategoryColors[-1]);
-
       header.push('Aucune sous-catégorie');
-      subCategoriesColumnMap[-1] = vm.category.subCategories.length + 1;
+      subCategoriesColumnMap[-1] = Object.keys(subCategoriesColumnMap).length + 1;
 
       chartData.push(header);
 
@@ -390,6 +411,31 @@
         cols : cols,
         rows : rows
       };
+    }
+
+    function startCreating() {
+      vm.isCreating = true;
+      vm.newSubCategory = {
+        category: vm.category
+      };
+    }
+
+    function finishCreating() {
+      SubCategories.save({categoryId: vm.category.id}, vm.newSubCategory, function (subCategory) {
+        vm.category.subCategories.push(subCategory);
+        vm.subCategoriesGraphActivation[subCategory.id] = false;
+
+        cancelCreating();
+        loadCategoryColors();
+        updateChart();
+      }, function () {
+        alert('Failed saving sub category');
+      });
+    }
+
+    function cancelCreating() {
+      vm.isCreating = false;
+      vm.newSubCategory = undefined;
     }
   }
 })();

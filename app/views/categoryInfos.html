@@ -20,6 +20,24 @@
         <span class="glyphicon glyphicon-eye-open action" aria-hidden="true" title="Plus d'infos sur la sous-catégorie" ng-click="CategoryInfosCtrl.showCategoryBankOperations($index)"></span>
       </td>
     </tr>
+    <tr ng-show="CategoryInfosCtrl.isCreating">
+      <td class="legendCol">
+        <div class="legendBloc"></div>
+      </td>
+      <td>
+        <input type="text"
+               class="form-control input-sm small"
+               ng-model="CategoryInfosCtrl.newSubCategory.name"/>
+      </td>
+      <td class="iconCol">
+        <span class="glyphicon glyphicon-ok action" aria-hidden="true" ng-click="CategoryInfosCtrl.finishCreating()"></span>
+      </td>
+      <td class="iconCol">
+        <span class="glyphicon glyphicon-remove action" aria-hidden="true" ng-click="CategoryInfosCtrl.cancelCreating()"></span>
+      </td>
+      <td class="iconCol"></td>
+      <td class="iconCol"></td>
+    </tr>
     <tr>
       <td class="legendCol">
         <div class="legendBloc" ng-style="{'background-color':CategoryInfosCtrl.getSubCategoryColor(-1)}"></div>
@@ -32,7 +50,7 @@
     </tr>
   </table>
 
-  <button class="btn btn-sm">Nouveau</button>
+  <button class="btn btn-sm" ng-show="!CategoryInfosCtrl.isCreating" ng-click="CategoryInfosCtrl.startCreating()">Nouveau</button>
 </div>
 
 <div id="upperGraph">

@@ -21,7 +21,7 @@
                    typeahead-min-length="0"
                    ng-focus="AccountDetailsCtrl.onTypeaheadFocus($event)"
                    empty-typeahead
-                   class="form-control input-sm"
+                   class="form-control input-sm small"
                    ng-disabled="!AccountDetailsCtrl.isEditing"
                    required/>
           </td>
@@ -35,7 +35,7 @@
                    typeahead-min-length="0"
                    ng-focus="AccountDetailsCtrl.onTypeaheadFocus($event)"
                    empty-typeahead
-                   class="form-control input-sm"
+                   class="form-control input-sm small"
                    ng-disabled="!AccountDetailsCtrl.isEditing"
                    required/>
             </select>
@@ -49,7 +49,7 @@
                    typeahead-min-length="0"
                    ng-focus="AccountDetailsCtrl.onTypeaheadFocus($event)"
                    empty-typeahead
-                   class="form-control input-sm"/>
+                   class="form-control input-sm small"/>
           </td>
         </tr>
         <tr>
@@ -68,7 +68,7 @@
           <td>Num chèque</td>
           <td>
             <input type="text"
-                   class="form-control input-sm"
+                   class="form-control input-sm small"
                    ng-model="AccountDetailsCtrl.currentBankOperation.bankNoteNum"
                    ng-disabled="!AccountDetailsCtrl.isEditing"/>
           </td>
@@ -77,7 +77,7 @@
           <td>Date</td>
           <td>
             <input type="text"
-                   class="form-control input-sm"
+                   class="form-control input-sm small"
                    ng-model="AccountDetailsCtrl.currentBankOperation.operationDate"
                    ng-keypress="AccountDetailsCtrl.handleDateChangeByKeyboard($event)"
                    ng-disabled="!AccountDetailsCtrl.isEditing"
@@ -89,7 +89,7 @@
           <td>
             <input type="number"
                    min="0"
-                   class="form-control input-sm"
+                   class="form-control input-sm small"
                    ng-model="AccountDetailsCtrl.currentBankOperation.credit"
                    ng-disabled="!AccountDetailsCtrl.isEditing"
                    required/>
