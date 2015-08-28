@@ -46,7 +46,7 @@
         <span class="glyphicon glyphicon-eye-open action" aria-hidden="true" title="Plus d'infos sur la sous-catégorie" ng-click="CategoriesCtrl.showSubCategoryBankOperations($parent.$index, $index, 'charge')"></span>
       </td>
       <td>
-        <span ng-show="!CategoriesCtrl.isConcernedByMoving(subCategory)" class="glyphicon glyphicon-transfer action" aria-hidden="true" title="Déplacer" ng-click="CategoriesCtrl.startMoving(category, subCategory, 'charge')"></span>
+        <span ng-show="!CategoriesCtrl.isConcernedByMoving(subCategory)" class="glyphicon glyphicon-transfer action" aria-hidden="true" title="Déplacer" ng-click="CategoriesCtrl.startMoving(category, subCategory)"></span>
         <div ng-show="CategoriesCtrl.isConcernedByMoving(subCategory)">
           <select ng-model="CategoriesCtrl.movingInfos.dstCategory" ng-options="category.name for category in CategoriesCtrl.chargeCategories"></select>
           <span class="glyphicon glyphicon-ok action" aria-hidden="true" title="Valider" ng-click="CategoriesCtrl.finishMoving($index)"></span>
@@ -105,7 +105,12 @@
         <span class="glyphicon glyphicon-eye-open action" aria-hidden="true" ng-click="CategoriesCtrl.showSubCategoryBankOperations($parent.$index, $index, 'credit')"></span>
       </td>
       <td>
-        <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>
+        <span ng-show="!CategoriesCtrl.isConcernedByMoving(subCategory)" class="glyphicon glyphicon-transfer action" aria-hidden="true" title="Déplacer" ng-click="CategoriesCtrl.startMoving(category, subCategory)"></span>
+        <div ng-show="CategoriesCtrl.isConcernedByMoving(subCategory)">
+          <select ng-model="CategoriesCtrl.movingInfos.dstCategory" ng-options="category.name for category in CategoriesCtrl.creditCategories"></select>
+          <span class="glyphicon glyphicon-ok action" aria-hidden="true" title="Valider" ng-click="CategoriesCtrl.finishMoving($index)"></span>
+          <span class="glyphicon glyphicon-remove action" aria-hidden="true" title="Annuler" ng-click="CategoriesCtrl.cancelMoving()"></span>
+        </div>
       </td>
     </tr>
   </tbody>

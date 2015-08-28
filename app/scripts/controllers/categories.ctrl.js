@@ -200,13 +200,12 @@
      * @param subCategoryIdx Index de la sous-catégorie dans le tableau de sous-catégories de la catégorie source.
      */
     function finishMoving(subCategoryIdx) {
-      vm.movingInfos.dstCategory.subCategories.push(vm.movingInfos.subCategory);
-      vm.movingInfos.srcCategory.subCategories.splice(subCategoryIdx, 1);
-
       var subCategoryCopy = angular.copy(vm.movingInfos.subCategory);
       subCategoryCopy.category = vm.movingInfos.dstCategory;
 
-      SubCategories.update({categoryId: vm.movingInfos.srcCategory.id, subCategoryId: subCategoryCopy.id}, subCategoryCopy, function () {
+      SubCategories.update({categoryId: vm.movingInfos.srcCategory.id, subCategoryId: subCategoryCopy.id, move: true}, subCategoryCopy, function () {
+        vm.movingInfos.dstCategory.subCategories.push(vm.movingInfos.subCategory);
+        vm.movingInfos.srcCategory.subCategories.splice(subCategoryIdx, 1);
         vm.movingInfos = undefined;
       }, function () {
         alert('ko');
