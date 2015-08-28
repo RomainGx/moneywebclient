@@ -1,13 +1,9 @@
 <table id="chargeCategoriesTable" class="table table-condensed">
   <tr>
-    <th>Charges</th>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th colspan="5">Charges</th>
   </tr>
   <tbody ng-repeat="category in CategoriesCtrl.chargeCategories">
-    <tr class="line">
+    <tr class="line categoryLine">
       <td class="category editable">
         <span ng-hide="CategoriesCtrl.isCategoryConcernedByEdit($index, 'charge')">{{category.name}}</span>
         <input type="text"
@@ -56,18 +52,12 @@
   </tbody>
 </table>
 
-<br/><br/><br/>
-
 <table class="table table-condensed">
   <tr>
-    <th>Crédits</th>
-    <th></th>
-    <th></th>
-    <th></th>
-    <th></th>
+    <th colspan="5">Crédits</th>
   </tr>
   <tbody ng-repeat="category in CategoriesCtrl.creditCategories">
-    <tr class="line">
+    <tr class="line categoryLine">
       <td class="category editable">
         <span ng-hide="CategoriesCtrl.isCategoryConcernedByEdit($index, 'credit')">{{category.name}}</span>
         <input type="text"

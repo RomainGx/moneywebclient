@@ -1,6 +1,19 @@
+table.table:first-of-type {
+  float: left;
+  width: 45%;
+  margin-left: 40px;
+}
+
+table.table:last-of-type {
+  float: right;
+  width: 45%;
+  margin-right: 40px;
+}
+
 table th {
   text-transform: uppercase;
   font-size: 1.2em;
+  text-align: center;
 }
 
 .table-condensed > tbody > tr > td.subCategory {
@@ -13,4 +26,9 @@ table th {
 
 .editable input {
   width: 80%;
+}
+
+.categoryLine {
+  background-color: #f9f9f9;
+  font-weight: bold;
 }
