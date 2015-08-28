@@ -20,6 +20,8 @@
     vm.creditCategories = Categories.Credit.query();
     /** Label actuel de la zone d'édition. */
     vm.editedLabel = '';
+    /** Infos nécessaires pour le déplacement d'une sous-catégorie. */
+    vm.movingInfos = undefined;
 
     vm.startEditingCategory = startEditingCategory;
     vm.startEditingSubCategory = startEditingSubCategory;
@@ -30,6 +32,10 @@
     vm.showCategoryBankOperations = showCategoryBankOperations;
     vm.showSubCategoryBankOperations = showSubCategoryBankOperations;
     vm.handleInputKeyPress = handleInputKeyPress;
+    vm.isConcernedByMoving = isConcernedByMoving;
+    vm.startMoving = startMoving;
+    vm.finishMoving = finishMoving;
+    vm.cancelMoving = cancelMoving;
 
 
     /**
@@ -165,6 +171,53 @@
         vm.editedElement = {};
         vm.editedLabel = '';
       }
+    }
+
+    /**
+     * Indique si la sous-catégorie passée en paramètre est concernée par le déplacement.
+     * @param subCategory Sous-catégorie à tester.
+     * @returns {boolean} true si la sous-catégorie est concernée par le déplacement, false sinon.
+     */
+    function isConcernedByMoving(subCategory) {
+      return vm.movingInfos && vm.movingInfos.subCategory.id === subCategory.id;
+    }
+
+    /**
+     * Initialise les données nécessaires au déplacement.
+     * @param category Catégorie dans laquelle se trouve actuellement la sous-catégorie.
+     * @param subCategory Sous-catégorie à déplacer.
+     */
+    function startMoving(category, subCategory) {
+      vm.movingInfos = {
+        srcCategory: category,
+        dstCategory: category,
+        subCategory: subCategory
+      }
+    }
+
+    /**
+     * Valide le déplacement de la sous-catégorie.
+     * @param subCategoryIdx Index de la sous-catégorie dans le tableau de sous-catégories de la catégorie source.
+     */
+    function finishMoving(subCategoryIdx) {
+      vm.movingInfos.dstCategory.subCategories.push(vm.movingInfos.subCategory);
+      vm.movingInfos.srcCategory.subCategories.splice(subCategoryIdx, 1);
+
+      var subCategoryCopy = angular.copy(vm.movingInfos.subCategory);
+      subCategoryCopy.category = vm.movingInfos.dstCategory;
+
+      SubCategories.update({categoryId: vm.movingInfos.srcCategory.id, subCategoryId: subCategoryCopy.id}, subCategoryCopy, function () {
+        vm.movingInfos = undefined;
+      }, function () {
+        alert('ko');
+      });
+    }
+
+    /**
+     * Annule le déplacement de la sous-catégorie.
+     */
+    function cancelMoving() {
+      vm.movingInfos = undefined;
     }
   }
 })();
