@@ -12,7 +12,9 @@
     var vm = this;
 
     vm.isCreating = false;
+    vm.isEditing = false;
     vm.newSubCategory = undefined;
+    vm.editedSubCategory = undefined;
     /** Paramètres utilisés par ng-table pour la liste des opérations. */
     vm.tableParams = null;
     vm.category = {};
@@ -29,6 +31,9 @@
     vm.startCreating = startCreating;
     vm.finishCreating = finishCreating;
     vm.cancelCreating = cancelCreating;
+    vm.startEditing = startEditing;
+    vm.finishEditing = finishEditing;
+    vm.cancelEditing = cancelEditing;
     vm.updateChart = updateChart;
     vm.toggleShowOnGraph = toggleShowOnGraph;
     vm.isSubCategoryShownOnGraph = isSubCategoryShownOnGraph;
@@ -394,6 +399,34 @@
     function cancelCreating() {
       vm.isCreating = false;
       vm.newSubCategory = undefined;
+    }
+
+    function startEditing(subCategoryIdx) {
+      var subCategory = vm.category.subCategories[subCategoryIdx];
+
+      vm.isEditing = true;
+      vm.editedSubCategory = {
+        id: subCategory.id,
+        category: vm.category,
+        name: subCategory.name
+      };
+    }
+
+    function finishEditing(subCategoryIdx) {
+      var originalSubCategory = vm.category.subCategories[subCategoryIdx];
+
+      SubCategories.update({categoryId: vm.category.id, subCategoryId: originalSubCategory.id}, vm.editedSubCategory, function (subCategory) {
+        vm.category.subCategories[subCategoryIdx] = subCategory;
+
+        cancelEditing();
+      }, function () {
+        alert('Failed updating sub category');
+      });
+    }
+
+    function cancelEditing() {
+      vm.isEditing = false;
+      vm.editedSubCategory = undefined;
     }
   }
 })();
