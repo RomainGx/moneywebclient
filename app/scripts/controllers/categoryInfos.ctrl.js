@@ -213,7 +213,7 @@
       operationIdx = vm.bankOperations.length - 1;
       while (operationIdx >= 0) {
         if (showOperationOnGraph(vm.bankOperations[operationIdx])) {
-          if (isInPeriod(operationIdx, startOfPeriod, endOfPeriod)) {
+          if (Utils.isInPeriod(vm.bankOperations[operationIdx].operationDate, startOfPeriod, endOfPeriod)) {
             // L'opération est affectée à une sous-catégorie
             if (vm.bankOperations[operationIdx].subCategory) {
               columnIdx = subCategoriesColumnMap[vm.bankOperations[operationIdx].subCategory.id];
@@ -275,17 +275,6 @@
       }
 
       return startingMoment;
-    }
-
-    /**
-     * Détermine si l'opération située à l'index operationIdx se situe dans une période donnée.
-     * @param operationIdx Index de l'opération à tester.
-     * @param startOfPeriod Timestamp de début de la période (en ms)
-     * @param endOfPeriod Timestamp de fin de la période (en ms)
-     * @returns {boolean} true si l'opération se situe dans la période, false si elle est en-dehors
-     */
-    function isInPeriod(operationIdx, startOfPeriod, endOfPeriod) {
-      return vm.bankOperations[operationIdx].operationDate >= startOfPeriod && vm.bankOperations[operationIdx].operationDate <= endOfPeriod;
     }
 
     /**

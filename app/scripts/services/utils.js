@@ -117,6 +117,17 @@
           cols : cols,
           rows : rows
         };
+      },
+
+      /**
+       * Détermine si l'opération située à l'index operationIdx se situe dans une période donnée.
+       * @param {number} timestampMs Timestamp à tester (en ms).
+       * @param {number} startOfPeriod Timestamp de début de la période (en ms)
+       * @param {number} endOfPeriod Timestamp de fin de la période (en ms)
+       * @returns {boolean} true si le timestamp se situe dans la période, false s'il est en-dehors
+       */
+      isInPeriod: function (timestampMs, startOfPeriod, endOfPeriod) {
+        return timestampMs >= startOfPeriod && timestampMs <= endOfPeriod;
       }
     }
   }

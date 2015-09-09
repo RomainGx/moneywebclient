@@ -56,6 +56,18 @@ angular
         controllerAs: 'CategoryInfosCtrl',
         css: 'styles/categoryInfos.css'
       })
+      .when('/analysis', {
+        templateUrl: 'views/analysis/home.html',
+        controller: 'AnalysisCtrl',
+        controllerAs: 'AnalysisCtrl',
+        css: 'styles/analysis/home.css'
+      })
+      .when('/analysis/balanceEvolution', {
+        templateUrl: 'views/analysis/balanceEvolution.html',
+        controller: 'BalanceEvolutionAnalysisCtrl',
+        controllerAs: 'BEAnalysisCtrl',
+        css: 'styles/analysis/balanceEvolution.css'
+      })
       .otherwise({
         redirectTo: '/accounts'
       });

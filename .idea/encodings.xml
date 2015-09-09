@@ -3,6 +3,7 @@
   <component name="Encoding">
     <file url="file://$PROJECT_DIR$/app/scripts/app.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/accountDetails.ctrl.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/scripts/controllers/analysis/balanceEvolution.ctrl.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/categories.ctrl.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/categoryInfos.ctrl.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/editAccount.ctrl.js" charset="UTF-8" />
@@ -12,11 +13,14 @@
     <file url="file://$PROJECT_DIR$/app/scripts/services/constants.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/services/subCategories.factory.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/accountDetails.css" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/styles/analysis/balanceEvolution.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/categories.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/categoryInfos.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/components.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/main.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/views/accounts.html" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/views/analysis/balanceEvolution.html" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/views/analysis/home.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/views/categoryInfos.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/test/spec/controllers/categoryInfos.ctrl.js" charset="UTF-8" />
   </component>
