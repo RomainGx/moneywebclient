@@ -68,9 +68,22 @@ angular
         controllerAs: 'BEAnalysisCtrl',
         css: 'styles/analysis/balanceEvolution.css'
       })
+      .when('/analysis/calendar', {
+        templateUrl: 'views/analysis/calendar.html',
+        controller: 'CalendarAnalysisCtrl',
+        controllerAs: 'CalAnalysisCtrl',
+        css: 'styles/analysis/calendar.css'
+      })
       .otherwise({
         redirectTo: '/accounts'
       });
+  })
+  .value('googleChartApiConfig', {
+    version: '1',
+    optionalSettings: {
+      packages: ['corechart', 'calendar'],
+      language: 'fr'
+    }
   });
 
 

@@ -106,7 +106,7 @@
 
           for (column=0 ; column < data[line].length ; column++) {
             var insideRow = {
-              v: types[column] === 'string' ? data[line][column] : data[line][column].toFixed(2)
+              v: (types[column] === 'string' || types[column] === 'date') ?  data[line][column] : data[line][column].toFixed(2)
             };
             row.c.push(insideRow);
           }

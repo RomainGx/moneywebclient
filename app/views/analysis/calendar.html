@@ -1,0 +1,14 @@
+<h3>Vue calendaire</h3>
+
+<label for="account">Compte :</label>
+<select id="account"
+        ng-model="CalAnalysisCtrl.account"
+        ng-options="account as account.name for account in CalAnalysisCtrl.accounts"
+        ng-change="CalAnalysisCtrl.onAccountChanged()"></select>
+<label for="account">Vue :</label>
+<select id="viewType"
+        ng-model="CalAnalysisCtrl.selectedViewType"
+        ng-options="key as val for (key, val) in CalAnalysisCtrl.viewTypes"
+        ng-change="CalAnalysisCtrl.onViewTypeChanged()"></select>
+
+<div id="calendarGraph" google-chart chart="CalAnalysisCtrl.chartConfig"></div>
