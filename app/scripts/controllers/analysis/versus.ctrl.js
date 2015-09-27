@@ -377,7 +377,7 @@
       chartData = computeChartData();
 
       vm.chartConfig = {
-        type: "ColumnChart",
+        type: "BarChart",
         displayed: true,
         data: Utils.arrayToDataTable(chartData, types),
         options: {
@@ -386,9 +386,9 @@
           },
           chartArea: {
             top: 20,
-            bottom: 20
+            bottom: 0
           },
-          vAxis: {
+          hAxis: {
             minValue: 0,
             format: 'decimal'
           },
@@ -488,6 +488,10 @@
      */
     function getCategoryAmountRate(category) {
       var total = category.type === 'CHARGE' ? vm.chargesAmount : vm.creditsAmount;
+
+      if (total === 0) {
+        return 0;
+      }
       return Math.abs(getCategoryAmount(category.id)) / total;
     }
 
@@ -513,6 +517,10 @@
      */
     function getSubCategoryAmountRate(category, subCategoryId) {
       var total = category.type === 'CHARGE' ? vm.chargesAmount : vm.creditsAmount;
+
+      if (total === 0) {
+        return 0;
+      }
       return Math.abs(getSubCategoryAmount(category.id, subCategoryId)) / total;
     }
 
