@@ -51,6 +51,8 @@
     vm.onGlobalCheckboxClick = onGlobalCheckboxClick;
     vm.getBalance = getBalance;
     vm.getBalanceRate = getBalanceRate;
+    vm.updateStartingPeriod = updateStartingPeriod;
+    vm.updateEndingPeriod = updateEndingPeriod;
     vm.updateChart = updateChart;
 
 
@@ -279,6 +281,58 @@
         return 0;
       }
       return isCharge ? vm.chargesAmount / total : vm.creditsAmount / total;
+    }
+
+    /**
+     * Modifie le debut de la periode de reference.
+     * @param {Number} delta 0 pour aller au debut de la periode, 31 pour aller a la fin, et tout autre nombre
+     * pour incrementer/decrementer la periode.
+     * @param {String} period day, month ou year.
+     */
+    function updateStartingPeriod(delta, period) {
+      if (delta === 0 && !Utils.isValid(period)) {
+        vm.startPeriod = moment().toDate();
+      }
+      else if (delta === 0) {
+        vm.startPeriod = moment(vm.startPeriod).startOf(period).toDate();
+      }
+      else if (delta === 31) {
+        vm.startPeriod = moment(vm.startPeriod).endOf(period).toDate();
+      }
+      else if (delta > 0) {
+        vm.startPeriod = moment(vm.startPeriod).add(delta, period).toDate();
+      }
+      else {
+        vm.startPeriod = moment(vm.startPeriod).subtract(-delta, period).toDate();
+      }
+
+      updateChart();
+    }
+
+    /**
+     * Modifie la fin de la periode de reference.
+     * @param {Number} delta 0 pour aller au debut de la periode, 31 pour aller a la fin, et tout autre nombre
+     * pour incrementer/decrementer la periode.
+     * @param {String} period day, month ou year.
+     */
+    function updateEndingPeriod(delta, period) {
+      if (delta === 0 && !Utils.isValid(period)) {
+        vm.endPeriod = moment().toDate();
+      }
+      else if (delta === 0) {
+        vm.endPeriod = moment(vm.endPeriod).startOf(period).toDate();
+      }
+      else if (delta === 31) {
+        vm.endPeriod = moment(vm.endPeriod).endOf(period).toDate();
+      }
+      else if (delta > 0) {
+        vm.endPeriod = moment(vm.endPeriod).add(delta, period).toDate();
+      }
+      else {
+        vm.endPeriod = moment(vm.endPeriod).subtract(-delta, period).toDate();
+      }
+
+      updateChart();
     }
 
     /**

@@ -89,3 +89,32 @@ body {
     border-bottom: 0;
   }
 }
+
+
+span.roundedIcon
+{
+  display: inline-block;
+  -moz-border-radius: 100px;
+  -webkit-border-radius: 100px;
+  border-radius: 100px;
+  -moz-box-shadow: 0px 0px 1px #000;
+  -webkit-box-shadow: 0px 0px 1px #000;
+  box-shadow: 0px 0px 1px #000;
+  background-color: #000;
+  color:white;
+  width: 22px;
+  height: 22px;
+  line-height: 22px;
+  text-align: center;
+  font-style: italic;
+  cursor: pointer;
+  opacity: 0.5;
+  -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+  -moz-user-select: none; /* mozilla browsers */
+  -khtml-user-select: none; /* webkit (konqueror) browsers */
+  -ms-user-select: none; /* IE10+ */
+}
+
+span.roundedIcon:hover {
+  opacity: 1;
+}

@@ -15,8 +15,26 @@
     <label>Période</label>
     <br/>
     Du <input type="date" ng-model="VsAnalysisCtrl.startPeriod" ng-change="VsAnalysisCtrl.updateChart()"/>
+    <span class="roundedIcon" title="Aujourd'hui" ng-click="VsAnalysisCtrl.updateStartingPeriod(0)">Auj</span>
+    <span class="roundedIcon" title="Début de mois" ng-click="VsAnalysisCtrl.updateStartingPeriod(0, 'month')">d</span>
+    <span class="roundedIcon" title="Fin de mois" ng-click="VsAnalysisCtrl.updateStartingPeriod(31, 'month')">f</span>
+    <span class="roundedIcon" title="-1 jour" ng-click="VsAnalysisCtrl.updateStartingPeriod(-1, 'day')">-j</span>
+    <span class="roundedIcon" title="-1 jour" ng-click="VsAnalysisCtrl.updateStartingPeriod(1, 'day')">+j</span>
+    <span class="roundedIcon" title="-1 mois" ng-click="VsAnalysisCtrl.updateStartingPeriod(-1, 'month')">-m</span>
+    <span class="roundedIcon" title="+1 mois" ng-click="VsAnalysisCtrl.updateStartingPeriod(1, 'month')">+m</span>
+    <span class="roundedIcon" title="-1 an" ng-click="VsAnalysisCtrl.updateStartingPeriod(-1, 'year')">-a</span>
+    <span class="roundedIcon" title="+1 an" ng-click="VsAnalysisCtrl.updateStartingPeriod(1, 'year')">+a</span>
     <br/>
     Au <input type="date" ng-model="VsAnalysisCtrl.endPeriod" ng-change="VsAnalysisCtrl.updateChart()"/>
+    <span class="roundedIcon" title="Aujourd'hui" ng-click="VsAnalysisCtrl.updateEndingPeriod(0)">Auj</span>
+    <span class="roundedIcon" title="Début de mois" ng-click="VsAnalysisCtrl.updateEndingPeriod(0, 'month')">d</span>
+    <span class="roundedIcon" title="Fin de mois" ng-click="VsAnalysisCtrl.updateEndingPeriod(31, 'month')">f</span>
+    <span class="roundedIcon" title="-1 jour" ng-click="VsAnalysisCtrl.updateEndingPeriod(-1, 'day')">-j</span>
+    <span class="roundedIcon" title="-1 jour" ng-click="VsAnalysisCtrl.updateEndingPeriod(1, 'day')">+j</span>
+    <span class="roundedIcon" title="-1 mois" ng-click="VsAnalysisCtrl.updateEndingPeriod(-1, 'month')">-m</span>
+    <span class="roundedIcon" title="+1 mois" ng-click="VsAnalysisCtrl.updateEndingPeriod(1, 'month')">+m</span>
+    <span class="roundedIcon" title="-1 an" ng-click="VsAnalysisCtrl.updateEndingPeriod(-1, 'year')">-a</span>
+    <span class="roundedIcon" title="+1 an" ng-click="VsAnalysisCtrl.updateEndingPeriod(1, 'year')">+a</span>
   </div>
 
   <table id="versusResults">
