@@ -1,0 +1,93 @@
+<h3>Dépenses vs Revenus</h3>
+
+<div id="headerArea">
+  <div id="accountSelection">
+    <label for="account">Compte(s) :</label>
+    <br/>
+    <select id="account"
+            multiple="multiple"
+            ng-model="VsAnalysisCtrl.selectedAccounts"
+            ng-options="account as account.name for account in VsAnalysisCtrl.accounts"
+            ng-change="VsAnalysisCtrl.onAccountChanged()"></select>
+  </div>
+
+  <table id="versusResults">
+    <tr class="credits">
+      <td class="type">REVENUS</td>
+      <td>{{VsAnalysisCtrl.creditsAmount | currency}}</td>
+      <td class="percentage">({{VsAnalysisCtrl.getBalanceRate(false) | percentage:2}})</td>
+    </tr>
+    <tr class="charges">
+      <td class="type">DEPENSES</td>
+      <td>{{VsAnalysisCtrl.chargesAmount | currency}}</td>
+      <td class="percentage">({{VsAnalysisCtrl.getBalanceRate(true) | percentage:2}})</td>
+    </tr>
+    <tr class="diff" ng-class="{'bad': VsAnalysisCtrl.getBalance() < 0, 'good': VsAnalysisCtrl.getBalance() >= 0}">
+      <td class="type">BALANCE</td>
+      <td>{{VsAnalysisCtrl.getBalance() | currency}}</td>
+      <td></td>
+    </tr>
+  </table>
+
+  <div id="versusGraph" google-chart chart="VsAnalysisCtrl.chartConfig"></div>
+</div>
+
+<br class="clear"/>
+
+<table id="chargeCategories" class="table table-condensed">
+  <tr>
+    <th colspan="3">
+      <input type="checkbox" ng-model="VsAnalysisCtrl.displayAllCharges" ng-click="VsAnalysisCtrl.onGlobalCheckboxClick($event, true)" />
+      Charges
+    </th>
+  </tr>
+  <tbody ng-repeat="category in VsAnalysisCtrl.chargeCategories">
+  <tr class="line categoryLine">
+    <td class="category">
+      <input type="checkbox" value="{{category.id}}" ng-model="VsAnalysisCtrl.checkedCategories[category.id]" ng-click="VsAnalysisCtrl.onCategoryChange($event, category)" />
+      {{category.name}}
+    </td>
+  </tr>
+  <tr ng-repeat="subCategory in category.subCategories" class="line">
+    <td class="subCategory">
+      <input type="checkbox" value="{{subCategory.id}}" ng-model="VsAnalysisCtrl.checkedSubCategories[subCategory.id]" ng-click="VsAnalysisCtrl.onSubCategoryChange($event, category, subCategory)" />
+      {{subCategory.name}}
+    </td>
+  </tr>
+  <tr ng-show="category.subCategories.length > 0">
+    <td class="subCategory">
+      <input type="checkbox" value="{{category.id}}" ng-model="VsAnalysisCtrl.checkedUnSubcategorised[category.id]" ng-click="VsAnalysisCtrl.onUnSubcategorisedChange($event, category)" />
+      Aucune sous-catégorie
+    </td>
+  </tr>
+  </tbody>
+</table>
+
+<table id="creditCategories" class="table table-condensed">
+  <tr>
+    <th colspan="3">
+      <input type="checkbox" ng-model="VsAnalysisCtrl.displayAllCredits" ng-click="VsAnalysisCtrl.onGlobalCheckboxClick($event, false)" />
+      Crédits
+    </th>
+  </tr>
+  <tbody ng-repeat="category in VsAnalysisCtrl.creditCategories">
+    <tr class="line categoryLine">
+      <td class="category">
+        <input type="checkbox" value="{{category.id}}" ng-model="VsAnalysisCtrl.checkedCategories[category.id]" ng-click="VsAnalysisCtrl.onCategoryChange($event, category)" />
+        {{category.name}}
+      </td>
+    </tr>
+    <tr ng-repeat="subCategory in category.subCategories" class="line">
+      <td class="subCategory">
+        <input type="checkbox" value="{{subCategory.id}}" ng-model="VsAnalysisCtrl.checkedSubCategories[subCategory.id]" ng-click="VsAnalysisCtrl.onSubCategoryChange($event, category, subCategory)" />
+        {{subCategory.name}}
+      </td>
+    </tr>
+    <tr ng-show="category.subCategories.length > 0">
+      <td class="subCategory">
+        <input type="checkbox" value="{{category.id}}" ng-model="VsAnalysisCtrl.checkedUnSubcategorised[category.id]" ng-click="VsAnalysisCtrl.onUnSubcategorisedChange($event, category)" />
+        Aucune sous-catégorie
+      </td>
+    </tr>
+  </tbody>
+</table>

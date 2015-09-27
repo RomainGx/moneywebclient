@@ -74,6 +74,12 @@ angular
         controllerAs: 'CalAnalysisCtrl',
         css: 'styles/analysis/calendar.css'
       })
+      .when('/analysis/versus', {
+        templateUrl: 'views/analysis/versus.html',
+        controller: 'VersusAnalysisCtrl',
+        controllerAs: 'VsAnalysisCtrl',
+        css: 'styles/analysis/versus.css'
+      })
       .otherwise({
         redirectTo: '/accounts'
       });

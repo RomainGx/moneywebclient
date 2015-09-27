@@ -9,6 +9,33 @@
   function Utils() {
     return {
       /**
+       * Indique si la valeur passee en parametre est valide, cad non undefined et non nulle.
+       * @param {Object} value Objet a verifier.
+       * @returns {Boolean} true si la valeur est valide, false sinon.
+       */
+      isValid: function isValid (value) {
+        var valid = false;
+
+        if (value instanceof jQuery) {
+          valid = value.length !== 0;
+        } else {
+          valid = typeof value !== 'undefined' && value !== null;
+        }
+
+        return valid;
+      },
+
+      /**
+       * Indique si la valeur passee en parametre est valide et si elle est bien egale a valueCheck.
+       * @param {Object} value Objet a verifier.
+       * @param {Object} valueCheck Valeur que doit avoir value.
+       * @returns {boolean} true si value est valide est est egale a valueCheck, false sinon.
+       */
+      isValidEquals: function isTrue (value, valueCheck) {
+        return this.isValid(value) && value === valueCheck;
+      },
+
+      /**
        * Retourne la date correspondant au timestamp passé en paramètre, sous une forme lisible par un humain.
        * @param timestampMs Timestamp en ms.
        * @returns {string} Date dans un format lisible.

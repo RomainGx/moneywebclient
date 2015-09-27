@@ -5,9 +5,12 @@
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/accountDetails.ctrl.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/analysis/balanceEvolution.ctrl.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/analysis/calendar.ctrl.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/scripts/controllers/analysis/versus.ctrl.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/categories.ctrl.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/categoryInfos.ctrl.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/controllers/editAccount.ctrl.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/scripts/directives/emptytypeahead.js" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/scripts/directives/percentage.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/services/accounts.factory.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/services/bankoperations.factory.js" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/scripts/services/categories.factory.js" charset="UTF-8" />
@@ -16,6 +19,7 @@
     <file url="file://$PROJECT_DIR$/app/styles/accountDetails.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/analysis/balanceEvolution.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/analysis/calendar.css" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/styles/analysis/versus.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/categories.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/categoryInfos.css" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/styles/components.css" charset="UTF-8" />
@@ -24,6 +28,7 @@
     <file url="file://$PROJECT_DIR$/app/views/analysis/balanceEvolution.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/views/analysis/calendar.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/views/analysis/home.html" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/app/views/analysis/versus.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/app/views/categoryInfos.html" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/test/spec/controllers/categoryInfos.ctrl.js" charset="UTF-8" />
   </component>
