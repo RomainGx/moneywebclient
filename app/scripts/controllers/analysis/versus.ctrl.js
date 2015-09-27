@@ -110,8 +110,6 @@
     function onCategoryChange(event, category, refreshChart) {
       var i, operation, isCharge = Utils.isValidEquals(category.type, 'CHARGE'), isChecked = event.target.checked;
 
-      initAmount(isCharge);
-
       // Mise a jour des checkboxes des sous-categories
       for (i=0 ; i < category.subCategories.length ; i++) {
         vm.checkedSubCategories[category.subCategories[i].id] = isChecked;
@@ -128,10 +126,6 @@
           if (Utils.isValid(operation.subCategory)) {
             operation.subCategory.checked = false;
           }
-        }
-
-        if (isOperationDisplayed(operation)) {
-          updateAmount(isCharge, operation);
         }
       }
 
@@ -190,8 +184,6 @@
       var i, operation, isChecked = event.target.checked,
         isCharge = Utils.isValidEquals(category.type, 'CHARGE');
 
-      initAmount(isCharge);
-
       // Mise a jour les operations (sous-categorie checkee ou non, categorie decheckee)
       for (i=0 ; i < vm.bankOperations.length ; i++) {
         operation = vm.bankOperations[i];
@@ -199,10 +191,6 @@
         if (Utils.isValid(operation.subCategory) && operation.subCategory.id === subCategory.id) {
           operation.category.checked = false;
           operation.subCategory.checked = isChecked;
-        }
-
-        if (isOperationDisplayed(operation)) {
-          updateAmount(isCharge, operation);
         }
       }
 
@@ -270,37 +258,6 @@
       }
 
       return isCategoryFull && Utils.isValidEquals(vm.checkedUnSubcategorised[category.id], true);
-    }
-
-    /**
-     * Initialise le montant total des charges ou des credits.
-     * @param {Boolean} isCharge true si on initialise les charges, false si ce sont les credits.
-     */
-    function initAmount(isCharge) {
-      if (isCharge) {
-        vm.chargesAmount = 0;
-      }
-      else {
-        vm.creditsAmount = 0;
-      }
-    }
-
-    /**
-     * Met a jour le montant total des charges ou des credits avec l'operation passee en parametre.
-     * @param {Boolean} isCharge true si on met a jour les charges, false si ce sont les credits.
-     * @param {BankOperation} operation Operation bancaire.
-     */
-    function updateAmount(isCharge, operation) {
-      if (isCharge) {
-        if (operation.category.type === 'CHARGE') {
-          vm.chargesAmount += operation.charge;
-        }
-      }
-      else {
-        if (operation.category.type === 'CREDIT') {
-          vm.creditsAmount += operation.credit;
-        }
-      }
     }
 
     /**
