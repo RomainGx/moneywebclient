@@ -31,6 +31,10 @@
     vm.chargesAmount = 0;
     /** Montant total des credits pour les categories selectionnees. */
     vm.creditsAmount = 0;
+    /** Montants par categories. */
+    vm.categoryAmounts = {};
+    /** Montants par sous-categories. */
+    vm.subCategoryAmounts = {};
 
     /** Comptes selectionnes et sur lesquels effectuer les calculs */
     vm.selectedAccounts = [];
@@ -54,6 +58,10 @@
     vm.updateStartingPeriod = updateStartingPeriod;
     vm.updateEndingPeriod = updateEndingPeriod;
     vm.updateChart = updateChart;
+    vm.getCategoryAmount = getCategoryAmount;
+    vm.getCategoryAmountRate = getCategoryAmountRate;
+    vm.getSubCategoryAmount = getSubCategoryAmount;
+    vm.getSubCategoryAmountRate = getSubCategoryAmountRate;
 
 
     loadAccounts();
@@ -394,17 +402,28 @@
      * @returns {Array} Tableau de donnees a afficher.
      */
     function computeChartData() {
-      var operationIdx = 0, chartData = [], totalCharges = 0, totalCredits = 0;
+      var operation, categoryId, subCategoryId, operationIdx = 0, chartData = [], totalCharges = 0, totalCredits = 0;
 
       chartData.push(['Nature', 'Dépenses', 'Revenus']);
+      vm.categoryAmounts = {};
+      vm.subCategoryAmounts = {};
 
       while (operationIdx < vm.bankOperations.length) {
-        if (isOperationDisplayed(vm.bankOperations[operationIdx])) {
-          if (vm.bankOperations[operationIdx].credit) {
-            totalCredits += vm.bankOperations[operationIdx].credit;
+        operation = vm.bankOperations[operationIdx];
+
+        if (isOperationDisplayed(operation)) {
+          categoryId = operation.category.id;
+          subCategoryId = checkAmountArraysInit(operation, categoryId);
+
+          if (Utils.isValid(operation.credit)) {
+            totalCredits += operation.credit;
+            vm.categoryAmounts[categoryId] += operation.credit;
+            vm.subCategoryAmounts[categoryId][subCategoryId] += operation.credit;
           }
           else {
-            totalCharges += vm.bankOperations[operationIdx].charge;
+            totalCharges += operation.charge;
+            vm.categoryAmounts[categoryId] -= operation.charge;
+            vm.subCategoryAmounts[categoryId][subCategoryId] -= operation.charge;
           }
         }
         operationIdx++;
@@ -418,6 +437,90 @@
       return chartData;
     }
 
+    /**
+     * Verifie que les tableaux contenant les montants par categorie et sous-categorie
+     * sont correctement initialises.
+     * @param {BankOperation} operation Operation bancaire.
+     * @param {Number} categoryId Identifiant d'une categorie.
+     * @returns {Number} Identifiant de la sous-categorie de l'operation bancaire.
+     */
+    function checkAmountArraysInit(operation, categoryId) {
+      var subCategoryId;
+
+      if (!Utils.isValid(vm.categoryAmounts[categoryId])) {
+        vm.categoryAmounts[categoryId] = 0;
+      }
+
+      if (Utils.isValid(operation.subCategory)) {
+        subCategoryId = operation.subCategory.id;
+      }
+      else {
+        subCategoryId = 0;
+      }
+
+      if (!Utils.isValid(vm.subCategoryAmounts[categoryId])) {
+        vm.subCategoryAmounts[categoryId] = {};
+      }
+      if (!Utils.isValid(vm.subCategoryAmounts[categoryId][subCategoryId])) {
+        vm.subCategoryAmounts[categoryId][subCategoryId] = 0;
+      }
+
+      return subCategoryId;
+    }
+
+    /**
+     * Retourne le montant de la categorie passee en parametre.
+     * @param {Number} categoryId Identifiant de la categorie.
+     * @returns {Number} Montant de la sous-categorie passee en parametre.
+     */
+    function getCategoryAmount(categoryId) {
+      if (Utils.isValid(vm.categoryAmounts[categoryId])) {
+        return vm.categoryAmounts[categoryId];
+      }
+      return 0;
+    }
+
+    /**
+     * Retourne le taux du montant de la categorie passee en parametre par rapport
+     * au total des charges ou des credits.
+     * @param {Category} category Categorie.
+     * @returns {Number} Taux.
+     */
+    function getCategoryAmountRate(category) {
+      var total = category.type === 'CHARGE' ? vm.chargesAmount : vm.creditsAmount;
+      return Math.abs(getCategoryAmount(category.id)) / total;
+    }
+
+    /**
+     * Retourne le montant de la sous-categorie passee en parametre.
+     * @param categoryId Identifiant de la categorie associee a la sous-categorie.
+     * @param subCategoryId Identifiant de la sous-categorie.
+     * @returns {Number} Montant de la sous-categorie passee en parametre.
+     */
+    function getSubCategoryAmount(categoryId, subCategoryId) {
+      if (Utils.isValid(vm.subCategoryAmounts[categoryId]) && Utils.isValid(vm.subCategoryAmounts[categoryId][subCategoryId])) {
+        return vm.subCategoryAmounts[categoryId][subCategoryId];
+      }
+      return 0;
+    }
+
+    /**
+     * Retourne le taux du montant de la sous-categorie passee en parametre par rapport
+     * au total des charges ou des credits.
+     * @param {Category} category Categorie associee a la sous-categorie.
+     * @param {Number} subCategoryId Identifiant de la sous-actegorie.
+     * @returns {Number} Taux.
+     */
+    function getSubCategoryAmountRate(category, subCategoryId) {
+      var total = category.type === 'CHARGE' ? vm.chargesAmount : vm.creditsAmount;
+      return Math.abs(getSubCategoryAmount(category.id, subCategoryId)) / total;
+    }
+
+    /**
+     * Indique si l'operation passee en parametre est a prendre en compte ou non.
+     * @param {BankOperation} operation Operation bancaire a tester.
+     * @returns {Boolean} true si l'operation doit etre prise en compte, ou false sinon.
+     */
     function isOperationDisplayed(operation) {
       return operation.operationDate >= vm.startPeriod && operation.operationDate <= vm.endPeriod &&
         (operation.category.checked === true ||

@@ -77,6 +77,12 @@
         {{category.name}}
       </label>
     </td>
+    <td>
+      {{VsAnalysisCtrl.getCategoryAmount(category.id) | currency}}
+    </td>
+    <td>
+      {{VsAnalysisCtrl.getCategoryAmountRate(category) | percentage: 2}}
+    </td>
   </tr>
   <tr ng-repeat="subCategory in category.subCategories" class="line">
     <td class="subCategory">
@@ -85,6 +91,12 @@
         {{subCategory.name}}
       </label>
     </td>
+    <td>
+      {{VsAnalysisCtrl.getSubCategoryAmount(category.id, subCategory.id) | currency}}
+    </td>
+    <td>
+      {{VsAnalysisCtrl.getSubCategoryAmountRate(category, subCategory.id) | percentage: 2}}
+    </td>
   </tr>
   <tr ng-show="category.subCategories.length > 0">
     <td class="subCategory">
@@ -92,6 +104,12 @@
         <input type="checkbox" value="{{category.id}}" ng-model="VsAnalysisCtrl.checkedUnSubcategorised[category.id]" ng-click="VsAnalysisCtrl.onUnSubcategorisedChange($event, category)" />
         Aucune sous-catégorie
       </label>
+    </td>
+    <td>
+      {{VsAnalysisCtrl.getSubCategoryAmount(category.id, 0) | currency}}
+    </td>
+    <td>
+      {{VsAnalysisCtrl.getSubCategoryAmountRate(category, 0) | percentage: 2}}
     </td>
   </tr>
   </tbody>
@@ -114,6 +132,12 @@
           {{category.name}}
         </label>
       </td>
+      <td>
+        {{VsAnalysisCtrl.getCategoryAmount(category.id) | currency}}
+      </td>
+      <td>
+        {{VsAnalysisCtrl.getCategoryAmountRate(category) | percentage: 2}}
+      </td>
     </tr>
     <tr ng-repeat="subCategory in category.subCategories" class="line">
       <td class="subCategory">
@@ -122,6 +146,12 @@
           {{subCategory.name}}
         </label>
       </td>
+      <td>
+        {{VsAnalysisCtrl.getSubCategoryAmount(category.id, subCategory.id) | currency}}
+      </td>
+      <td>
+        {{VsAnalysisCtrl.getSubCategoryAmountRate(category, subCategory.id) | percentage: 2}}
+      </td>
     </tr>
     <tr ng-show="category.subCategories.length > 0">
       <td class="subCategory">
@@ -129,6 +159,12 @@
           <input type="checkbox" value="{{category.id}}" ng-model="VsAnalysisCtrl.checkedUnSubcategorised[category.id]" ng-click="VsAnalysisCtrl.onUnSubcategorisedChange($event, category)" />
           Aucune sous-catégorie
         </label>
+      </td>
+      <td>
+        {{VsAnalysisCtrl.getSubCategoryAmount(category.id, 0) | currency}}
+      </td>
+      <td>
+        {{VsAnalysisCtrl.getSubCategoryAmountRate(category, 0) | percentage: 2}}
       </td>
     </tr>
   </tbody>
