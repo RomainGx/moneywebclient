@@ -23,6 +23,10 @@
     vm.checkedSubCategories = {};
     /** Etat des cases a cocher des sous-categories 'Aucune sous-categorie' (charges et credits confondus) */
     vm.checkedUnSubcategorised = {};
+    /** Debut de la periode sur laquelle effectuer le rendu et les calculs. */
+    vm.startPeriod = moment().startOf('month').toDate();
+    /** Fin de la periode sur laquelle effectuer le rendu et les calculs. */
+    vm.endPeriod = moment().toDate();
     /** Montant total des charges pour les categories selectionnees. */
     vm.chargesAmount = 0;
     /** Montant total des credits pour les categories selectionnees. */
@@ -47,6 +51,7 @@
     vm.onGlobalCheckboxClick = onGlobalCheckboxClick;
     vm.getBalance = getBalance;
     vm.getBalanceRate = getBalanceRate;
+    vm.updateChart = updateChart;
 
 
     loadAccounts();
@@ -396,13 +401,17 @@
 
       chartData.push(["", totalCharges, totalCredits]);
 
+      vm.creditsAmount = totalCredits;
+      vm.chargesAmount = totalCharges;
+
       return chartData;
     }
 
     function isOperationDisplayed(operation) {
-      return operation.category.checked === true ||
+      return operation.operationDate >= vm.startPeriod && operation.operationDate <= vm.endPeriod &&
+        (operation.category.checked === true ||
         (Utils.isValid(operation.subCategory) && operation.subCategory.checked === true) ||
-        (!Utils.isValid(operation.subCategory) && Utils.isValidEquals(vm.checkedUnSubcategorised[operation.category.id], true));
+        (!Utils.isValid(operation.subCategory) && Utils.isValidEquals(vm.checkedUnSubcategorised[operation.category.id], true)));
     }
   }
 })();

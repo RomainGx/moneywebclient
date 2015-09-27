@@ -4,6 +4,7 @@
 
 #accountSelection {
   float: left;
+  text-align: left;
 }
 
 #versusGraph {
@@ -66,4 +67,8 @@ table th {
 .categoryLine {
   background-color: #f9f9f9;
   font-weight: bold;
+}
+
+.subCategory label {
+  font-weight: normal;
 }
